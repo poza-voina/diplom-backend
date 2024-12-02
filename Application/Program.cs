@@ -2,8 +2,9 @@ using Application.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var services = builder.Services;
 // Add services to the container.
-builder.Services.AddRazorComponents()
+services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
 var app = builder.Build();
