@@ -1,13 +1,9 @@
-﻿using System;
-using System.Security.Cryptography;
-
-namespace Core.Dto;
+﻿namespace Core.Dto;
 
 
-public class CuePointsDto
+public class CuePointsDto(List<CuePointDto> values)
 {
-	public List<CuePointDto> Values { get; set; }
-	public CuePointsDto() { }
+	public List<CuePointDto> Values { get; set; } = values;
 
 	public void Move(int sortIndex, int newSortIndex)
 	{
@@ -76,8 +72,6 @@ public class CuePointsDto
 				item.SortIndex--;
 			}
 		}
-
-		Print();
 	}
 
 	//!warning

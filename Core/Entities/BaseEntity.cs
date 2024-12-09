@@ -2,8 +2,8 @@
 
 namespace Core.Entities;
 
-public abstract class BaseEntity
+public abstract class BaseEntity(long id)
 {
 	[Column("Id")]
-	public long Id { get; set; }
+	public long Id { get; set; } = id;
 }

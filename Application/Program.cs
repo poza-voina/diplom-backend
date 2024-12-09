@@ -1,9 +1,15 @@
 using Application.Components;
+using Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 // Add services to the container.
+
+services.AddDbContext("User ID=postgres;Password=psql;Server=localhost;Port=1111;Database=Ural;Include Error Detail=true");
+services.AddRepositories();
+services.AddServices();
+
 services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 

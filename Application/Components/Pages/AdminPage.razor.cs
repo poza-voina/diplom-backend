@@ -1,28 +1,27 @@
-﻿using System.Data;
-using System.Net;
-using Core.Dto;
+﻿using Core.Dto;
+using Core.Interfaces.Services;
+using Core.Services;
 
 namespace Application.Components.Pages;
 
 public partial class AdminPage
 {
-	public CuePointsDto CuePoints { get; set; } = new()
-	{
-		Values = new List<CuePointDto>
-					{
-						new CuePointDto() { Title = "a", SortIndex = 0},
-						new CuePointDto() { Title = "b", SortIndex = 1},
-						new CuePointDto() { Title = "c", SortIndex = 2},
-						new CuePointDto() { Title = "d", SortIndex = 3},
-						new CuePointDto() { Title = "e", SortIndex = 4},
-					}
-	};
+	public CuePointsDto CuePoints { get; set; }
+
+	public bool IsHidden { get; set; }
 	public IOrderedEnumerable<CuePointDto> CuePointsTruePosition { get; set; }
+	public CuePointDto CuePointDto { get; set; }
+
+	public NewCuePointComponent newCuePointComponent;
+	private readonly ICuePointService _cuePointService;
 
 	public ToggleBuffer ToggleBuffer { get; set; } = new ToggleBuffer();
 
-	public AdminPage()
+	public AdminPage(ICuePointService cuePointService)
 	{
+		IsHidden = false;
+		_cuePointService = cuePointService;
+		CuePoints = _cuePointService.GetAllCuePointsFromRoute(1);
 		UpdateCuePointsPossition();
 	}
 
@@ -64,6 +63,31 @@ public partial class AdminPage
 		{
 			ToggleBuffer.Add(index);
 		}
+	}
+
+	public void Hide()
+	{
+		IsHidden = true;
+	}
+	public void Show()
+	{
+		IsHidden = false;
+	}
+
+	public void GetNewCuePoint(NewCuePointDto dto)
+	{
+		var a = dto.MapToCuePointDto();
+		var max = CuePoints.Values.Count >= 0 ? CuePoints.Values.Count : 0;
+		a.SortIndex = max;
+		CuePoints.Add(a);
+		newCuePointComponent.Hide();
+		Show();
+	}
+
+	public void HandleAddNewCuePoint()
+	{
+		Hide();
+		newCuePointComponent.Show();
 	}
 }
 
@@ -111,6 +135,11 @@ public class ToggleBuffer
 	public void UpdateAfterDelete(int index)
 	{
 		Values.RemoveAll(x => x == index);
+	}
+
+	public void AddCuePoint()
+	{
+
 	}
 
 }

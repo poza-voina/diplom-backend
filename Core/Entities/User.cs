@@ -5,6 +5,28 @@ namespace Core.Entities;
 
 public class User : BaseEntity
 {
+	public User(long id,
+			string email,
+			string firstName,
+			string secondName,
+			string patronymic,
+			int age,
+			string phoneNumber,
+			DateTime registrationDateTime,
+			bool isEmailConfirmed,
+			string password) : base(id)
+	{
+		Email = email;
+		FirstName = firstName;
+		SecondName = secondName;
+		Patronymic = patronymic;
+		Age = age;
+		PhoneNumber = phoneNumber;
+		RegistrationDateTime = registrationDateTime;
+		IsEmailConfirmed = isEmailConfirmed;
+		Password = password;
+	}
+
 	[Column("Email")]
 	public string Email { get; set; }
 

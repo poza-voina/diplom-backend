@@ -1,39 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities;
 
 public class Route
+		(
+			long id,
+			string title,
+			string description,
+			int maxCountPeople,
+			int minCountPeople,
+			float baseCost,
+			DateTime creationDateTime,
+			DateTime startDateTime,
+			string routeTypes,
+			string cuePoint
+		) : BaseEntity(id)
 {
 	[Column("Title")]
-	public string Title { get; set; }
+	public string Title { get; set; } = title;
 
 	[Column("Description")]
-	public string Description { get; set; }
+	public string Description { get; set; } = description;
 
 	[Column("MaxCountPeople")]
-	public int MaxCountPeople { get; set; }
-	
+	public int MaxCountPeople { get; set; } = maxCountPeople;
+
 	[Column("MinCountPeople")]
-	public int MinCountPeople { get; set; }
+	public int MinCountPeople { get; set; } = minCountPeople;
 
 	[Column("BaseCost")]
-	public float BaseCost { get; set; }
-	
+	public float BaseCost { get; set; } = baseCost;
+
 	[Column("CreationDateTime")]
-	public DateTime CreationDateTime { get; set; }
-	
+	public DateTime CreationDateTime { get; set; } = creationDateTime;
+
 	[Column("StartDateTime")]
-	public DateTime StartDateTime { get; set; }
+	public DateTime StartDateTime { get; set; } = startDateTime;
 
 	[Column("RouteTypes")]
-	public string RouteTypes { get; set; } // ?
+	public string RouteTypes { get; set; } = routeTypes;
 
 	[Column("CuePoint")]
-	public string CuePoint { get; set; } // ?
+	public string CuePoint { get; set; } = cuePoint;
 }

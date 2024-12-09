@@ -9,7 +9,7 @@
 
 <main id="admin-menu-editRoute">
 	<div id="map" class="borderBlack"></div>
-	<div id="mapMenu" class="borderBlack">
+	<div class="@(IsHidden ? "hidden-element" : "") borderBlack" id="mapMenu">
 		<div id="mapMenu-content">
 			@foreach (var mapMenuItem in CuePointsTruePosition)
 			{
@@ -35,10 +35,12 @@
 			}
 		</div>
 		<div>
-			<a id="btn-add-new-route" @click=AddCuePoint class="borderBlack">Добавить точку маршрута</a>
-			<a id="btn-add-new-route" @click=SaveRoute class="borderBlack">Сохранить</a>
+			<button id="btn-add-new-route" @onclick=HandleAddNewCuePoint class="borderBlack">Добавить точку маршрута</button>
+			<a id="btn-add-new-route" class="borderBlack">Сохранить</a>
 		</div>
 	</div>
+
+	<NewCuePointComponent @ref=newCuePointComponent OnSave=GetNewCuePoint/>
 </main>
 
 <!-- <script src="https://api-maps.yandex.ru/2.1/?apikey=268c38ba-239f-4d68-b429-57fcd29522bb&lang=ru_RU" type="text/javascript">

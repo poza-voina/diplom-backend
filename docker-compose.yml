@@ -11,6 +11,6 @@ services:
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "psql"
-      POSTGRES_DB: "Notes"
+      POSTGRES_DB: "Ural"
     ports:
       - "1111:5432"

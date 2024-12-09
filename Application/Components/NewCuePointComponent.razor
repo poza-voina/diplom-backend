@@ -1,0 +1,11 @@
+﻿<div class="@(IsHidden ? "hidden-element" : "")">
+	<div class="borderBlack">
+		<label>Название:</label>
+		<input @bind-value=@CuePoint.Title type="text" />
+		<label>Описание:</label>
+		<input @bind-value=@CuePoint.Description type="text" />
+		<label>Адрес:</label>
+		<input @bind-value=@CuePoint.Address type="text" />
+		<input @onclick=HandleSave type="button" value="Сохранить" />
+	</div>
+</div>

@@ -3,25 +3,31 @@
 namespace Core.Entities;
 
 public class CuePoint
+		(
+			long id,
+			string title,
+			string description,
+			string cuePointType,
+			DateTime creationDateTime,
+			long routeId,
+			int sortIndex
+		) : BaseEntity(id)
 {
 	[Column("Title")]
-	public string Title { get; set; }
+	public string Title { get; set; } = title;
 
 	[Column("Description")]
-	public string Description { get; set; }
+	public string Description { get; set; } = description;
 
 	[Column("CuePointType")]
-	public string CuePointType { get; set; }
+	public string CuePointType { get; set; } = cuePointType;
 
 	[Column("CreationDateTime")]
-	public string CreationDateTime { get; set; }
+	public DateTime CreationDateTime { get; set; } = creationDateTime;
 
-	[Column("NextCuePointId")]
-	public long NextCuePointId { get; set; }
-
-	[Column("PreviousCuePointId")]
-	public long PreviousCuePointId { get; set; }
+	[Column("RouteId")]
+	public long RouteId { get; set; } = routeId;
 
 	[Column("SortIndex")]
-	public long SortIndex { get; set; }
+	public int SortIndex { get; set; } = sortIndex;
 }

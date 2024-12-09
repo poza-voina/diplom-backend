@@ -1,4 +1,8 @@
-﻿.borderBlack {
+﻿.hidden-element {
+	display: none !important;
+}
+
+.borderBlack {
 	border: solid 3px black;
 }
 
@@ -46,8 +50,4 @@ main {
 .right-mapMenu-item {
 	display: flex;
 	flex-direction: row;
-}
-
-.hidden-element {
-	display: none;
 }
