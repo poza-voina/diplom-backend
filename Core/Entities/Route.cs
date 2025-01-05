@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Core.Interfaces.Entities;
 
 namespace Core.Entities;
 
@@ -11,7 +12,7 @@ public class Route(long id,
 	DateTime creationDateTime,
 	DateTime startDateTime,
 	string routeTypes,
-	bool isHidden) : BaseEntity(id)
+	bool isHidden) : BaseEntity(id), IFilteredRoute
 {
 	[Column("Title")]
 	public string Title { get; set; } = title ?? throw new ArgumentNullException(nameof(title));

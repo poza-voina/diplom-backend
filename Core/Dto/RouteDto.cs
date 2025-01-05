@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using Core.Entities;
+using Core.Interfaces.Entities;
 using Mapster;
 
 namespace Core.Dto;
 
-public class RouteDto
+public class RouteDto : IFilteredRoute
 {
 	public static readonly string URI_PATTERN_ADMIN = "admin/route/{0}";
 

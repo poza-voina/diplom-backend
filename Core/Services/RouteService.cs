@@ -1,5 +1,7 @@
 ﻿using Core.Dto;
 using Core.Entities;
+using Core.Interfaces;
+using Core.Interfaces.Entities;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 
@@ -14,6 +16,17 @@ public class RouteService(IRouteRepository repository) : IRouteService
 		return RouteDto.FromEntity(await _repository.CreateAsync(route));
 	}
 
+	public async Task<IEnumerable<IFilteredRoute>?> GetFilteredValuesAsync(IEnumerable<Func<IQueryable<IFilteredRoute>, IQueryable<IFilteredRoute>>> funcs)
+	{
+		IQueryable<IFilteredRoute> routes = _repository.Items;
+		foreach (var func in funcs)
+		{
+			routes = func(routes);
+		}
+
+		return routes.Cast<Route>().Select(x => RouteDto.FromEntity(x)).AsEnumerable();
+	}
+
 	public async Task DeleteRoute(Route route)
 	{
 		await _repository.DeleteAsync(route);
@@ -24,14 +37,13 @@ public class RouteService(IRouteRepository repository) : IRouteService
 		return RouteDto.FromEntity(await _repository.GetAsync(id));
 	}
 
-	public async Task<RoutesDto> GetRoutesPerPage(int pageNumber, int countPerPage)
+	public async Task<IEnumerable<RouteDto>> GetRoutesPerPage(int pageNumber, int countPerPage)
 	{
 		var pageData = _repository.Items
 					.Skip((pageNumber - 1) * countPerPage)
-					.Take(countPerPage)
-					.ToList() ?? throw new InvalidOperationException("ошибка");
+					.Take(countPerPage);
 
-		return RoutesDto.FromEntities(pageData);
+		return pageData.Select(x => RouteDto.FromEntity(x));
 	}
 
 	public async Task<RouteDto> UpdateRoute(Route route)

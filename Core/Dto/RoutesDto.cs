@@ -1,9 +1,13 @@
-﻿using Core.Entities;
+﻿using System.Collections.ObjectModel;
+using Core.Entities;
+using Core.Interfaces;
+using Core.Interfaces.Entities;
+using Core.Interfaces.Repositories;
 using Mapster;
 
 namespace Core.Dto;
 
-public class RoutesDto
+public class RoutesDto : IGettableFilteredRoutes<IFilteredRoute, IFilteredRoute>
 {
 	public List<RouteDto> Values { get; set; }
 
@@ -37,5 +41,16 @@ public class RoutesDto
 			result.Append(RouteDto.ToEntity(item));
 		}
 		return result;
+	}
+
+	public async Task<IEnumerable<IFilteredRoute>?> GetFilteredValuesAsync(IEnumerable<Func<IQueryable<IFilteredRoute>, IQueryable<IFilteredRoute>>> funcs)
+	{
+		IQueryable<IFilteredRoute> routes = Values.AsQueryable<IFilteredRoute>();
+		foreach (var func in funcs)
+		{
+			routes = func(routes);
+		}
+
+		return routes;
 	}
 }

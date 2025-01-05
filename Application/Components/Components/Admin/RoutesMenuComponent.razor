@@ -6,7 +6,7 @@
 		<div>По алфавиту</div>
 	</div>
 	<div>Поиск</div>
-	<div>Показывать скрытые <input type="checkbox"/></div>
-	<div>Показывать открытые <input type="checkbox"/></div>
+	<div>Показывать скрытые <InputCheckbox @bind-Value=Values.IsShowVisible @onclick=HandleShowVisible/></div>
+	<div>Показывать видимые <InputCheckbox @bind-Value=Values.IsShowHidden @onclick=HandleShowHidden/></div>
 	<div>Корзина</div>
 </div>
