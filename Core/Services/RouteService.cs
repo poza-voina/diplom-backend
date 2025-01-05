@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.Dto;
+using Core.Entities;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 
@@ -8,9 +9,9 @@ public class RouteService(IRouteRepository repository) : IRouteService
 {
 	private readonly IRouteRepository _repository = repository;
 
-	public async Task<Route> CreateRoute(Route route)
+	public async Task<RouteDto> CreateRoute(Route route)
 	{
-		return await _repository.CreateAsync(route);
+		return RouteDto.FromEntity(await _repository.CreateAsync(route));
 	}
 
 	public async Task DeleteRoute(Route route)
@@ -18,13 +19,36 @@ public class RouteService(IRouteRepository repository) : IRouteService
 		await _repository.DeleteAsync(route);
 	}
 
-	public async Task<Route> GetRoute(long id)
+	public async Task<RouteDto> GetRoute(long id)
 	{
-		return await _repository.GetAsync(id);
+		return RouteDto.FromEntity(await _repository.GetAsync(id));
 	}
 
-	public async Task<Route> UpdateRoute(Route route)
+	public async Task<RoutesDto> GetRoutesPerPage(int pageNumber, int countPerPage)
 	{
-		return await _repository.UpdateAsync(route);
+		var pageData = _repository.Items
+					.Skip((pageNumber - 1) * countPerPage)
+					.Take(countPerPage)
+					.ToList() ?? throw new InvalidOperationException("ошибка");
+
+		return RoutesDto.FromEntities(pageData);
+	}
+
+	public async Task<RouteDto> UpdateRoute(Route route)
+	{
+		return RouteDto.FromEntity(await _repository.UpdateAsync(route));
+	}
+
+	public async Task HideRoute(RouteDto dto)
+	{
+		dto.IsHidden = true;
+		await _repository.UpdateAsync(RouteDto.ToEntity(dto));
+	}
+
+	public async Task ShowRoute(RouteDto dto)
+	{
+		dto.IsHidden = false;
+		var a = await _repository.UpdateAsync(RouteDto.ToEntity(dto));
+		var test = 0;
 	}
 }

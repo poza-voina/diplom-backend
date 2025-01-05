@@ -1,27 +1,31 @@
 ﻿using Core.Dto;
 using Core.Interfaces.Services;
 using Core.Services;
+using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Mvc.Razor.Internal;
 
-namespace Application.Components.Pages;
+namespace Application.Components.Pages.Admin;
 
-public partial class AdminPage
+public partial class RoutePage : ComponentBase
 {
-	public CuePointsDto CuePoints { get; set; }
+	[Parameter]
+	public long? RouteId { get; set; }
 
+	public CuePointsDto CuePoints { get; set; }
 	public bool IsHidden { get; set; }
 	public IOrderedEnumerable<CuePointDto> CuePointsTruePosition { get; set; }
 	public CuePointDto CuePointDto { get; set; }
-
 	public NewCuePointComponent newCuePointComponent;
-	private readonly ICuePointService _cuePointService;
+
+	[Inject]
+	private ICuePointService CuePointService { get; init; } = default!;
 
 	public ToggleBuffer ToggleBuffer { get; set; } = new ToggleBuffer();
 
-	public AdminPage(ICuePointService cuePointService)
+	protected override void OnInitialized()
 	{
 		IsHidden = false;
-		_cuePointService = cuePointService;
-		CuePoints = _cuePointService.GetAllCuePointsFromRoute(1);
+		CuePoints = CuePointService.GetAllCuePointsFromRoute(1);
 		UpdateCuePointsPossition();
 	}
 

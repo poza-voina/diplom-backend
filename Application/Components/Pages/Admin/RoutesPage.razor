@@ -1,0 +1,37 @@
+﻿@page "/admin/routes"
+@inject IJSRuntime JS
+@rendermode RenderMode.InteractiveServer
+@using Core.Dto
+@using Application.Components.Components.Admin
+
+<h3>Маршруты</h3>
+
+<RoutesMenuComponent/>
+
+<div class="routes-container">
+	@foreach (var item in Routes.Values)
+	{
+		<div class="route-container" @onclick="() => GoToRoute(item.Id)">
+			<div>
+				<a>
+					@item.Title
+				</a>
+				<div><div>Дата создания:</div><div>@item.CreationDateTime</div></div>
+				<div><div>Дата проведения:</div><div>@item.StartDateTime</div></div>
+			</div>
+			<div class="route-buttons-container">
+				<div @onclick:stopPropagation="@true" @onclick="DeleteRoute">
+					<button><img src="icons/trash.svg" alt="Удалить" /></button>
+				</div>
+				<div>
+					<button @onclick:stopPropagation="@true" @onclick="() => ShowRoute(item)" class="@(item.IsHidden ? "": "hidden")">
+						<img src="icons/eye-slash.svg" alt="Скрыто" />
+					</button>
+					<button @onclick:stopPropagation="@true" @onclick="() => HideRoute(item)" class="@(item.IsHidden ? "hidden" : "")">
+						<img src="icons/eye.svg" alt="Показано" />
+					</button>
+				</div>
+			</div>
+		</div>
+	}
+</div>

@@ -14,12 +14,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Dto\" />
+		<ProjectReference Include="..\Core\Core.csproj" />
+		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Core\Core.csproj" />
-		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+	  <Folder Include="wwwroot\icons\" />
 	</ItemGroup>
 
 </Project>

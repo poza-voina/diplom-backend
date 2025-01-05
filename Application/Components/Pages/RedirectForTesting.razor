@@ -1,0 +1,11 @@
+﻿@page "/"
+@inject NavigationManager NavManager
+
+<h3>RedirectForTesting</h3>
+
+@code {
+	protected override void OnInitialized()
+	{
+		NavManager.NavigateTo("/admin/routes");
+	}
+}

@@ -1,0 +1,25 @@
+﻿.hidden {
+	display: none;
+}
+
+.routes-container {
+	display: flex;
+	flex-direction: column;
+	border: 2px solid black;
+	align-items: center;
+}
+
+.route-container {
+	display: flex;
+	width: 1000px;
+	flex-direction: row;
+	justify-content: space-between;
+	border: 2px solid black;
+	align-items: flex-end;
+}
+
+.route-buttons-container {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+}

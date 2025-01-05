@@ -8,7 +8,7 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 {
 	protected ApplicationDbContext DbContext { get; }
 	protected DbSet<TEntity> Set { get; }
-	public IQueryable<TEntity> Items => Set.AsQueryable();
+	public IQueryable<TEntity> Items => Set.AsQueryable().AsNoTracking();
 
 	public Repository(ApplicationDbContext dbContext)
 	{
@@ -28,10 +28,20 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 
 	public async Task<TEntity> UpdateAsync(TEntity entity)
 	{
-		Set.Update(entity);
+		ArgumentNullException.ThrowIfNull(entity);
+
+		if (DbContext.Entry(entity).State is EntityState.Detached)
+		{
+			DbContext.Entry(entity).State = EntityState.Modified;
+		}
+
+		DbContext.Update(entity);
 		await DbContext.SaveChangesAsync();
+		DbContext.Entry(entity).State = EntityState.Detached;
+
 		return entity;
 	}
+
 
 	public async Task DeleteAsync(TEntity entity)
 	{
