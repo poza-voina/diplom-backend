@@ -1,2 +1,22 @@
-﻿body {
+﻿.routes-menu-container {
+    display: flex;
+    align-items: center;
+    border: 2px solid black;
+    justify-content: space-between;
+}
+
+.left {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+.right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.hidden {
+    display: none;
 }

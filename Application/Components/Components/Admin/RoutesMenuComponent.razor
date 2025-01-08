@@ -1,12 +1,27 @@
-﻿<div>
-	<div>Сортировка</div>
-	<div>
-		<div>По дате создания</div>
-		<div>По дате начала</div>
-		<div>По алфавиту</div>
+﻿@using Application.Dto
+<div class="routes-menu-container">
+	<div class="left">
+		<div class="dropdown" id="sorting-button">
+			<div class="dropdown-toggle-container">
+				<button class="dropdown-item" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Без сортировки
+				</button>
+			</div>
+			<div class="dropdown-menu hidden">
+				@foreach (SortingTypes item in Enum.GetValues(typeof(SortingTypes)))
+				{
+					<button class="dropdown-item" @onclick="() => SetSortingType(item)">@SortingTypesHelper.GetMessage(item)</button>
+				}
+				</div>
+		</div>
+		<div>Показывать скрытые <InputCheckbox @bind-Value=Values.IsShowHidden @onclick=HandleShowHidden /></div>
+		<div>Показывать видимые <InputCheckbox @bind-Value=Values.IsShowVisible @onclick=HandleShowVisible /></div>
 	</div>
-	<div>Поиск</div>
-	<div>Показывать скрытые <InputCheckbox @bind-Value=Values.IsShowHidden @onclick=HandleShowHidden/></div>
-	<div>Показывать видимые <InputCheckbox @bind-Value=Values.IsShowVisible @onclick=HandleShowVisible /></div>
-	<div>Корзина</div>
+
+	<div class="right">
+		<div>Поиск</div>
+		<div>Корзина</div>
+	</div>
+
+	@* <script src="{PATH}/{COMPONENT}.razor.js"></script> *@
 </div>
