@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Core.Entities;
+﻿using Core.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
@@ -7,6 +7,7 @@ public class ApplicationDbContext : DbContext
 {
 	DbSet<Route> Routes => Set<Route>();
 	DbSet<CuePoint> CuePoints => Set<CuePoint>();
+	DbSet<RouteExample> RouteExample => Set<RouteExample>();
 
 	public ApplicationDbContext() { }
 
@@ -14,11 +15,11 @@ public class ApplicationDbContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		base.OnModelCreating(modelBuilder);
-	}
-
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		base.OnConfiguring(optionsBuilder);
+		modelBuilder
+			.Entity<Route>()
+			.HasMany(e => e.RouteExamples)
+			.WithOne(e => e.Route)
+			.HasForeignKey(e => e.RouteId)
+			.IsRequired();
 	}
 }

@@ -3,41 +3,54 @@ using Core.Interfaces.Entities;
 
 namespace Core.Entities;
 
-public class Route(long id,
-	string title,
-	string description,
-	int maxCountPeople,
-	int minCountPeople,
-	float baseCost,
-	DateTime creationDateTime,
-	DateTime startDateTime,
-	string routeTypes,
-	bool isHidden) : BaseEntity(id), IFilteredRoute
+public class Route : BaseEntity, IFilteredRoute
 {
+	public Route
+		(
+		long id,
+		string title,
+		string description,
+		int maxCountPeople,
+		int minCountPeople,
+		float baseCost,
+		DateTime creationDateTime,
+		string routeTypes,
+		bool isHidden
+		) : base(id)
+	{
+		Title = title;
+		Description = description;
+		MaxCountPeople = maxCountPeople;
+		MinCountPeople = minCountPeople;
+		BaseCost = baseCost;
+		CreationDateTime = creationDateTime;
+		RouteTypes = routeTypes;
+		IsHidden = isHidden;
+	}
+
 	[Column("Title")]
-	public string Title { get; set; } = title ?? throw new ArgumentNullException(nameof(title));
+	public string Title { get; set; }
 
 	[Column("Description")]
-	public string Description { get; set; } = description ?? throw new ArgumentNullException(nameof(description));
+	public string Description { get; set; }
 
 	[Column("MaxCountPeople")]
-	public int MaxCountPeople { get; set; } = maxCountPeople;
+	public int MaxCountPeople { get; set; }
 
 	[Column("MinCountPeople")]
-	public int MinCountPeople { get; set; } = minCountPeople;
+	public int MinCountPeople { get; set; }
 
 	[Column("BaseCost")]
-	public float BaseCost { get; set; } = baseCost;
+	public float BaseCost { get; set; }
 
 	[Column("CreationDateTime")]
-	public DateTime CreationDateTime { get; set; } = creationDateTime;
-
-	[Column("StartDateTime")]
-	public DateTime StartDateTime { get; set; } = startDateTime;
+	public DateTime CreationDateTime { get; set; }
 
 	[Column("RouteTypes")]
-	public string RouteTypes { get; set; } = routeTypes ?? throw new ArgumentNullException(nameof(routeTypes));
+	public string RouteTypes { get; set; }
 
 	[Column("IsHidden")]
-	public bool IsHidden { get; set; } = isHidden;
+	public bool IsHidden { get; set; }
+
+	public virtual ICollection<RouteExample>? RouteExamples { get; set; }
 }

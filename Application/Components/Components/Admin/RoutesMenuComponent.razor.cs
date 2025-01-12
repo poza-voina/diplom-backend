@@ -1,4 +1,5 @@
 ﻿using Application.Dto;
+using Core.Dto;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
@@ -14,6 +15,9 @@ public partial class RoutesMenuComponent : ComponentBase
 	[Parameter]
 	public EventCallback<RoutesMenuDto> OnSend { get; set; }
 
+	[Parameter]
+	public EventCallback OnStartingCreationNewRoute { get; set; }
+
 	private async Task HandleShowVisible()
 	{
 		Values.IsShowVisible = !Values.IsShowVisible;
@@ -25,6 +29,10 @@ public partial class RoutesMenuComponent : ComponentBase
 		await Send();
 	}
 
+	private async Task HandleAddNewRouteAsync()
+	{
+		await OnStartingCreationNewRoute.InvokeAsync();
+	}
 
 	private async Task SetSortingType(SortingTypes sortingType)
 	{

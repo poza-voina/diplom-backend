@@ -17,7 +17,6 @@ public class RouteDto : IFilteredRoute
 		int minCountPeople,
 		float baseCost,
 		DateTime creationDateTime,
-		DateTime startDateTime,
 		string routeTypes,
 		bool isHidden)
 	{
@@ -28,7 +27,6 @@ public class RouteDto : IFilteredRoute
 		MinCountPeople = minCountPeople;
 		BaseCost = baseCost;
 		CreationDateTime = creationDateTime;
-		StartDateTime = startDateTime;
 		RouteTypes = routeTypes;
 		IsHidden = isHidden;
 	}
@@ -41,7 +39,6 @@ public class RouteDto : IFilteredRoute
 	public int MinCountPeople { get; set; }
 	public float BaseCost { get; set; }
 	public DateTime CreationDateTime { get; set; }
-	public DateTime StartDateTime { get; set; }
 	public string RouteTypes { get; set; }
 	public bool IsHidden { get; set; }
 	#endregion
@@ -54,7 +51,6 @@ public class RouteDto : IFilteredRoute
 			minCountPeople: dto.MinCountPeople,
 			baseCost: dto.BaseCost,
 			creationDateTime: dto.CreationDateTime,
-			startDateTime: dto.StartDateTime,
 			routeTypes: dto.RouteTypes,
 			isHidden: dto.IsHidden);
 
@@ -67,7 +63,6 @@ public class RouteDto : IFilteredRoute
 			minCountPeople: entity.MinCountPeople,
 			baseCost: entity.BaseCost,
 			creationDateTime: entity.CreationDateTime,
-			startDateTime: entity.StartDateTime,
 			routeTypes: entity.RouteTypes,
 			isHidden: entity.IsHidden);
 }

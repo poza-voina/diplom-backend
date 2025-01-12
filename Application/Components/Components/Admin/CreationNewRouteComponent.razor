@@ -1,0 +1,11 @@
+﻿<div class="@(IsHidden ? "hidden-element" : "")">
+	<div class="borderBlack">
+		@foreach (var item in NewRoute.GetFormFields())
+		{
+			<label>Описание:</label>
+			<input @bind-value=@CuePoint.Description type="text" />
+		}
+
+		
+	</div>
+</div>
