@@ -1,4 +1,6 @@
-﻿@using Application.Dto
+﻿@using Application.Components.Components.BaseComponents
+@using Application.Components.Components.Forms
+@using Application.Dto
 <div class="routes-menu-container">
 	<div class="left">
 		<div class="dropdown" id="sorting-button">
@@ -16,11 +18,15 @@
 		</div>
 		<div>Показывать скрытые <InputCheckbox @bind-Value=Values.IsShowHidden @onclick=HandleShowHidden /></div>
 		<div>Показывать видимые <InputCheckbox @bind-Value=Values.IsShowVisible @onclick=HandleShowVisible /></div>
-		<div><button>+</button></div>
 	</div>
 
 	<div class="right">
 		<div>Поиск</div>
 		<div>Корзина</div>
+		<div @onclick=OpenModal><img src="/icons/plus-square.svg"/></div>
 	</div>
+
+	<Modal @ref=ModalWindow>
+		<AddNewRouteForm OnSave="SaveNewRoute"></AddNewRouteForm>
+	</Modal>
 </div>

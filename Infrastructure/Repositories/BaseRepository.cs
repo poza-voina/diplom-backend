@@ -20,6 +20,7 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 	{
 		Set.Add(entity);
 		await DbContext.SaveChangesAsync();
+		DbContext.Entry(entity).State = EntityState.Detached;
 		return entity;
 	}
 

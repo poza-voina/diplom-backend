@@ -11,6 +11,7 @@ using Application.Components.Components.Admin;
 using Humanizer;
 using Core.Interfaces;
 using Core.Interfaces.Entities;
+using Application.Components.Components.BaseComponents;
 
 namespace Application.Components.Pages.Admin;
 
@@ -77,6 +78,11 @@ public partial class RoutesPage : ComponentBase
 			Routes.Values = a.Cast<RouteDto>().ToList();
 		}
 		StateHasChanged();
+	}
+
+	public void ShowCreatedRoute(RouteDto dto)
+	{
+		Routes.Values.Insert(0, dto);
 	}
 
 	public async Task Apply()

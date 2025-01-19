@@ -16,6 +16,11 @@ public class RouteService(IRouteRepository repository) : IRouteService
 		return RouteDto.FromEntity(await _repository.CreateAsync(route));
 	}
 
+	public async Task<RouteDto> CreateRoute(RouteDto route)
+	{
+		return RouteDto.FromEntity(await _repository.CreateAsync(RouteDto.ToEntity(route)));
+	}
+
 	public async Task<IEnumerable<IFilteredRoute>?> GetFilteredValuesAsync(IEnumerable<Func<IQueryable<IFilteredRoute>, IQueryable<IFilteredRoute>>> funcs)
 	{
 		IQueryable<IFilteredRoute> routes = _repository.Items;
