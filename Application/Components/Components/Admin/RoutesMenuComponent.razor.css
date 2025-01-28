@@ -1,22 +1,64 @@
 ﻿.routes-menu-container {
     display: flex;
     align-items: center;
-    border: 2px solid black;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-radius: 4px;
+    padding: 5px;
     justify-content: space-between;
 }
 
 .left {
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
+    align-items: center;
 }
 
 .right {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    align-items: center;
+}
+
+.right .menu-container-item {
+    margin-left: 5px;
 }
 
 .hidden {
     display: none;
+}
+
+.sorting-buttons-container {
+    margin-right: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.sorting-buttons-toggle-container {
+    margin-right: 5px;
+}
+
+.sorting-buttons-item {
+    margin-right: 5px;
+}
+
+.show-hide-container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+    .show-hide-container label {
+        margin: 0;
+        display: flex;
+        align-items: center;
+    }
+
+.show-hidden,
+.show-show {
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }

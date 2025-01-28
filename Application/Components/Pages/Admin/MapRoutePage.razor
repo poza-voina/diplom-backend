@@ -1,0 +1,44 @@
+﻿@page "/admin/route/{RouteId:long}/map"
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@rendermode RenderMode.InteractiveServer
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+
+
+<main id="admin-menu-editRoute">
+	<div class="@(IsHidden ? "hidden-element" : "") borderBlack" id="mapMenu">
+		<div id="mapMenu-content">
+			@foreach (var mapMenuItem in CuePointsTruePosition)
+			{
+				<div class="border mapMenu-item">
+					<div class="left-mapMenu-item">
+						<button @onclick="() => MoveHigher(mapMenuItem.SortIndex)" class="borderBlack">Поместить выше</button>
+						<button @onclick="() => MoveLower(mapMenuItem.SortIndex)" class="borderBlack">Поместить ниже</button>
+					</div>
+
+					<div class="borderBlack center-mapMenu-item">
+						<input type="text" value="@mapMenuItem.Title" readonly />
+						<div class="mapMenu-moreInformation @(ToggleBuffer.IsOn(mapMenuItem.SortIndex) ? "": "hidden-element")">
+							<input type="text" value="@mapMenuItem.Title" readonly />
+							<input type="text" value="Описание:" readonly />
+						</div>
+					</div>
+
+					<div class="borderBlack right-mapMenu-item">
+						<button @onclick="() => Expand(mapMenuItem.SortIndex)" class="borderBlack">@(ToggleBuffer.IsOn(mapMenuItem.SortIndex) ? "Завернуть" : "Развернуть")</button>
+						<button @onclick="() => Remove(mapMenuItem.SortIndex)" class="borderBlack">Удалить</button>
+					</div>
+				</div>
+			}
+		</div>
+		<div>
+			<button id="btn-add-new-route" @onclick=HandleAddNewCuePoint class="borderBlack">Добавить точку маршрута</button>
+			<a id="btn-add-new-route" class="borderBlack">Сохранить</a>
+		</div>
+	</div>
+
+	<NewCuePointComponent @ref=newCuePointComponent OnSave=GetNewCuePoint/>
+</main>

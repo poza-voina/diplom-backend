@@ -13,6 +13,11 @@ services.AddServices();
 services.AddRazorComponents()
 	.AddInteractiveServerComponents();
 
+services.AddServerSideBlazor(options =>
+{
+	options.DetailedErrors = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

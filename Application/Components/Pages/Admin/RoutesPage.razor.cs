@@ -1,17 +1,10 @@
-﻿using Application.Dto;
+﻿using Application.Components.Components.Admin;
 using Core.Dto;
 using Core.Functions;
-using Core.Interfaces.Services;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Mvc;
-using Core.Functions;
-using Entities = Core.Entities;
-using Application.Components.Components.Admin;
-using Humanizer;
 using Core.Interfaces;
 using Core.Interfaces.Entities;
-using Application.Components.Components.BaseComponents;
+using Core.Interfaces.Services;
+using Microsoft.AspNetCore.Components;
 
 namespace Application.Components.Pages.Admin;
 

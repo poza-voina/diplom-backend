@@ -1,4 +1,4 @@
-﻿<div>
+﻿<div class="form-container">
 	@if (FormErrors.IsErrorsByKey(nameof(NewRoute.Title)))
 	{
 		<div class="text-danger">
@@ -9,11 +9,11 @@
 		</div>
 	}
 	<label>@NewRoute.GetDisplayName(nameof(NewRoute.Title))</label>
-	<InputText @bind-Value=NewRoute.Title></InputText>
+	<InputText class="form-control" @bind-Value=NewRoute.Title></InputText>
 
 	@if (FormErrors.IsErrorsByKey(nameof(NewRoute.Description)))
 	{
-		<div class="text-danger">
+		<div class="text-danger">	
 			@foreach (var error in FormErrors.GetErrorsByKey(nameof(NewRoute.Description)))
 			{
 				<p>@error</p>
@@ -21,7 +21,7 @@
 		</div>
 	}
 	<label>@NewRoute.GetDisplayName(nameof(NewRoute.Description))</label>
-	<InputText @bind-Value=NewRoute.Description></InputText>
+	<InputText class="form-control" @bind-Value=NewRoute.Description></InputText>
 
 	@if (FormErrors.IsErrorsByKey(nameof(NewRoute.MaxCountPeople)))
 	{
@@ -33,7 +33,7 @@
 		</div>
 	}
 	<label>@NewRoute.GetDisplayName(nameof(NewRoute.MaxCountPeople))</label>
-	<InputNumber @bind-Value=NewRoute.MaxCountPeople></InputNumber>
+	<InputNumber class="form-control" @bind-Value=NewRoute.MaxCountPeople></InputNumber>
 
 	@if (FormErrors.IsErrorsByKey(nameof(NewRoute.MinCountPeople)))
 	{
@@ -45,7 +45,7 @@
 		</div>
 	}
 	<label>@NewRoute.GetDisplayName(nameof(NewRoute.MinCountPeople))</label>
-	<InputNumber @bind-Value=NewRoute.MinCountPeople></InputNumber>
+	<InputNumber class="form-control" @bind-Value=NewRoute.MinCountPeople></InputNumber>
 
 	@if (FormErrors.IsErrorsByKey(nameof(NewRoute.BaseCost)))
 	{
@@ -57,7 +57,9 @@
 		</div>
 	}
 	<label>@NewRoute.GetDisplayName(nameof(NewRoute.BaseCost))</label>
-	<InputNumber @bind-Value=NewRoute.BaseCost></InputNumber>
+	<InputNumber class="form-control" @bind-Value=NewRoute.BaseCost></InputNumber>
 
-	<button @onclick=Save>Сохранить</button>
+	<div class="controll-buttons">
+		<button class="btn btn_sm" @onclick=Save>Сохранить</button>
+	</div>
 </div>

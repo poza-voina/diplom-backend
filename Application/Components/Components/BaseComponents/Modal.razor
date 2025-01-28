@@ -1,6 +1,8 @@
 ﻿<div class="modal @(IsVisible ? "show" : "hide")">
 	<div class="modal-content">
-		<span class="close" @onclick="Close">&times;</span>
+		<div class="controll-buttons">
+			<span class="close" @onclick="Close">&times;</span>
+		</div>
 		@ChildContent
 	</div>
 </div>

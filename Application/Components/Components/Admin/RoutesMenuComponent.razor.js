@@ -1,12 +1,12 @@
 ﻿class DropdownButton {
     constructor(id) {
         this.rootNode = document.getElementById(id);
-        this.dropdownToggleContainer = this.rootNode.getElementsByClassName("dropdown-toggle-container")[0];
-        this.dropdownMenu = this.rootNode.getElementsByClassName("dropdown-menu")[0];
+        this.dropdownToggleContainer = this.rootNode.getElementsByClassName("sorting-buttons-toggle-container")[0];
+        this.dropdownMenu = this.rootNode.getElementsByClassName("sorting-buttons-menu")[0];
 
         this.dropdownToggleContainer.addEventListener("click", this.handleDropDownToggle.bind(this));
 
-        for (let item of this.rootNode.getElementsByClassName("dropdown-item")) {
+        for (let item of this.rootNode.getElementsByClassName("sorting-buttons-item")) {
             item.addEventListener("click", this.handleClickOnItem.bind(this));
         }
 
@@ -15,7 +15,7 @@
 
     handleDropDownToggle(event) {
         this.dropdownMenu.classList.toggle("hidden");
-        console.log("dropdown toggled!");
+        console.log("sorting-buttons toggled!");
     }
 
     handleClickOnItem(event) {
@@ -24,7 +24,7 @@
 
         // Получаем элемент, на который кликнули
         let clickedNode = event.target;
-        let toggleNode = this.dropdownToggleContainer.getElementsByClassName("dropdown-item")[0];
+        let toggleNode = this.dropdownToggleContainer.getElementsByClassName("sorting-buttons-item")[0];
 
         if (clickedNode !== toggleNode) {
             this.swap(clickedNode, toggleNode);

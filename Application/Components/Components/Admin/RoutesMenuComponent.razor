@@ -3,28 +3,30 @@
 @using Application.Dto
 <div class="routes-menu-container">
 	<div class="left">
-		<div class="dropdown" id="sorting-button">
-			<div class="dropdown-toggle-container">
-				<button class="dropdown-item" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<div class="sorting-buttons-container" id="sorting-button">
+			<div class="sorting-buttons-toggle-container">
+				<button class="btn btn-sm sorting-buttons-toggle">
 					Без сортировки
 				</button>
 			</div>
-			<div class="dropdown-menu hidden">
+			<div class="sorting-buttons-menu hidden">
 				@foreach (SortingTypes item in Enum.GetValues(typeof(SortingTypes)))
 				{
-					<button class="dropdown-item" @onclick="() => SetSortingType(item)">@SortingTypesHelper.GetMessage(item)</button>
+					<button class="btn btn-sm sorting-buttons-item" @onclick="() => SetSortingType(item)">@SortingTypesHelper.GetMessage(item)</button>
 				}
-				</div>
+			</div>
 		</div>
-		<div>Показывать скрытые <InputCheckbox @bind-Value=Values.IsShowHidden @onclick=HandleShowHidden /></div>
-		<div>Показывать видимые <InputCheckbox @bind-Value=Values.IsShowVisible @onclick=HandleShowVisible /></div>
+		<div class="show-hide-container">
+			<div class="show-hidden"><label>Показывать скрытые</label><InputCheckbox @bind-Value=Values.IsShowHidden @onclick=HandleShowHidden /></div>
+			<div class="show-show"><label>Показывать видимые</label><InputCheckbox @bind-Value=Values.IsShowVisible @onclick=HandleShowVisible /></div>
+		</div>	
 	</div>
 
 	<div class="right">
-		<div>Поиск</div>
-		<div>Корзина</div>
-		<div @onclick=OpenModal><img src="/icons/plus-square.svg"/></div>
+		<div class="menu-container-item"><input type="text" class="form-control form-control-sm"/></div>
+		<div class="menu-container-item"><button class="btn btn-sm" @onclick=OpenModal><img src="/icons/plus.svg" /></button></div>
 	</div>
+
 
 	<Modal @ref=ModalWindow>
 		<AddNewRouteForm OnSave="SaveNewRoute"></AddNewRouteForm>

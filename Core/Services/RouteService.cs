@@ -37,9 +37,14 @@ public class RouteService(IRouteRepository repository) : IRouteService
 		await _repository.DeleteAsync(route);
 	}
 
-	public async Task<RouteDto> GetRoute(long id)
+	public async Task<RouteDto?> GetRouteAsync(long id)
 	{
-		return RouteDto.FromEntity(await _repository.GetAsync(id));
+		try
+		{
+			return RouteDto.FromEntity(await _repository.GetAsync(id));
+		} catch (Exception ex) {
+			return null;
+		}
 	}
 
 	public async Task<IEnumerable<RouteDto>> GetRoutesPerPage(int pageNumber, int countPerPage)
