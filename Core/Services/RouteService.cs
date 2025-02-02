@@ -7,9 +7,32 @@ using Core.Interfaces.Services;
 
 namespace Core.Services;
 
-public class RouteService(IRouteRepository repository) : IRouteService
+public class RouteService(IRepository<Route> _repository) : IRouteService
 {
-	private readonly IRouteRepository _repository = repository;
+
+	public async Task<RouteDto> CreateAsync(RouteDto entity) =>
+	await CreateAsync(RouteDto.ToEntity(entity));
+
+	public async Task<RouteDto> CreateAsync(Route entity) =>
+			RouteDto.FromEntity(await _repository.CreateAsync(entity));
+
+	public async Task DeleteAsync(RouteDto entity) =>
+			await DeleteAsync(RouteDto.ToEntity(entity));
+
+	public async Task DeleteAsync(long id) =>
+			await _repository.DeleteAsync(id);
+
+	public async Task DeleteAsync(Route entity) =>
+			await _repository.DeleteAsync(entity);
+
+	public async Task<RouteDto> GetAsync(long id) =>
+			RouteDto.FromEntity(await _repository.GetAsync(id));
+
+	public async Task<RouteDto> UpdateAsync(RouteDto entity) =>
+			await UpdateAsync(RouteDto.ToEntity(entity));
+
+	public async Task<RouteDto> UpdateAsync(Route entity) =>
+			RouteDto.FromEntity(await _repository.UpdateAsync(entity));
 
 	public async Task<RouteDto> CreateRoute(Route route)
 	{
@@ -37,23 +60,16 @@ public class RouteService(IRouteRepository repository) : IRouteService
 		await _repository.DeleteAsync(route);
 	}
 
-	public async Task<RouteDto?> GetRouteAsync(long id)
-	{
-		try
-		{
-			return RouteDto.FromEntity(await _repository.GetAsync(id));
-		} catch (Exception ex) {
-			return null;
-		}
-	}
+	public async Task<RouteDto> GetRouteAsync(long id) =>
+		RouteDto.FromEntity(await _repository.GetAsync(id));
 
-	public async Task<IEnumerable<RouteDto>> GetRoutesPerPage(int pageNumber, int countPerPage)
+	public async Task<IEnumerable<RouteDto>> GetPerPage(int pageNumber, int countPerPage)
 	{
 		var pageData = _repository.Items
 					.Skip((pageNumber - 1) * countPerPage)
 					.Take(countPerPage);
 
-		return pageData.Select(x => RouteDto.FromEntity(x));
+		return pageData.Select(x => RouteDto.FromEntity(x)).ToList();
 	}
 
 	public async Task<RouteDto> UpdateRoute(Route route)

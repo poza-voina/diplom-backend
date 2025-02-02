@@ -83,7 +83,7 @@ public partial class RoutesMenuComponent : ComponentBase
 	private async Task SaveNewRoute(NewRouteDto dto)
 	{
 		ModalWindow?.Hide();
-		var newRoute = await RouteService.CreateRoute(NewRouteDto.ToCoreDto(dto));
+		var newRoute = await RouteService.CreateAsync(NewRouteDto.ToCoreDto(dto));
 		if (newRoute is { })
 		{
 			await OnNewRouteCreated.InvokeAsync(newRoute);

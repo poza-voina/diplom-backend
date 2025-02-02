@@ -1,37 +1,56 @@
 ﻿@page "/admin/route/{RouteId:long}"
+@rendermode InteractiveServer
 @using Application.Components.Components.Admin
 @using Application.Components.Components.BaseComponents
+@using Application.Components.Components.Forms
 
 <header>
-	<AdminMenuComponent/>
+	<AdminMenuComponent />
 </header>
-<h1>Маршрут</h1>
 
 @if (Route is { })
 {
 	<main>
-		<div class="route-map-container">
-			<MapComponent />
-		</div>
+		@* <div class="route-map-container"> *@
+		@* 	<MapComponent /> *@
+		@* </div> *@
 
 		<div class="route-cards-container">
 			<div class="route-card">
-				<div class="route-title">
-					<div class="text-lg-left">@Route.Title</div>
-					<button class="btn edit-btn">
-						<img src="icons/pencil.svg" alt="Изменить описание маршрута" />
-					</button>
-				</div>
-				<div class="route-header">
-					<div class="route-description">@Route.Description</div>
-				</div>
+				<AboutRoute Route="Route"/>
 			</div>
 
-			<div class="route-card">
-				<div class="route-instances">Экземпляры маршрутов</div>
+			<div class="route-card p-0">
+				<div class="table-header">
+					<h2>Экземпляры маршрутов</h2>
+					<button class="btn btn-small" @onclick="HandleOpenModal"><img src="icons/plus.svg" /></button>
+				</div>
+
+				<table class="styled-table">
+					<thead>
+						<tr>
+							<th>Дата начала</th>
+							<th>Дата окончания</th>
+							<th>Дата создания</th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var example in RouteExamples)
+						{
+							<tr>
+								<td>@example.StartDateTime</td>
+								<td>@example.EndDateTime</td>
+								<td>@example.CreationDateTime</td>
+							</tr>
+						}
+					</tbody>
+				</table>
 			</div>
 		</div>
 
+		<Modal @ref=ModalWindow>
+			<AddNewRouteExample @ref=AddNewRouteExampleFormRef OnSave=GetRouteExample />
+		</Modal>
 	</main>
 }
 else

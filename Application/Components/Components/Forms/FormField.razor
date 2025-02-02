@@ -1,0 +1,32 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+
+<div class="form-group">
+	@if (FieldErrors is { } && FieldErrors.Count() > 0)
+	{
+		<div class="text-danger">
+			@foreach (var error in FieldErrors)
+			{
+				<p>@error</p>
+			}
+		</div>
+	}
+
+	@if (Label is { })
+	{
+		<label>@Label</label>
+	}
+	@ChildContent
+</div>
+
+@code {
+	[Parameter] public string? Label { get; set; }
+	[Parameter] public IEnumerable<string>? FieldErrors { get; set; }
+	[Parameter] public RenderFragment? ChildContent { get; set; }
+
+
+	public void SetErrors(IEnumerable<string> errors)
+	{
+		FieldErrors = errors;
+		StateHasChanged();
+	}
+}

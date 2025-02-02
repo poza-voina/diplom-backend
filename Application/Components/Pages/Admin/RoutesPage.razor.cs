@@ -22,7 +22,7 @@ public partial class RoutesPage : ComponentBase
 	{
 		try
 		{
-			Routes = new RoutesDto((await RouteService.GetRoutesPerPage(1, 10)).ToList());
+			Routes = new RoutesDto((await RouteService.GetPerPage(1, 10)).ToList());
 		}
 		catch (Exception)
 		{

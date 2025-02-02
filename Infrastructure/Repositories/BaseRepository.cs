@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Infrastructure.Repositories;
 
@@ -31,7 +32,15 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 	{
 		ArgumentNullException.ThrowIfNull(entity);
 
-		if (DbContext.Entry(entity).State is EntityState.Detached)
+		var trackedEntity = DbContext.Set<TEntity>()
+			.Local
+			.FirstOrDefault(e => e.Id == entity.Id);
+
+		if (trackedEntity is { })
+		{
+			DbContext.Entry(trackedEntity).State = EntityState.Detached;
+		}
+		else if (DbContext.Entry(entity).State is EntityState.Detached)
 		{
 			DbContext.Entry(entity).State = EntityState.Modified;
 		}
@@ -47,6 +56,12 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 	public async Task DeleteAsync(TEntity entity)
 	{
 		Set.Remove(entity);
+		await DbContext.SaveChangesAsync();
+	}
+
+	public async Task DeleteAsync(long id)
+	{
+		Set.Remove(await Set.FindAsync(id) ?? throw new InvalidOperationException($"Entity с id = {id} не существует"));
 		await DbContext.SaveChangesAsync();
 	}
 

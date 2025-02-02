@@ -1,0 +1,13 @@
+﻿<div class="form-container">
+	<FormField @ref=StartDateTimeFormField Label="Дата начала маршрута">
+		<InputDate Type="InputDateType.DateTimeLocal" @bind-Value="RouteExample.StartDateTime"></InputDate>
+	</FormField>
+
+	<FormField @ref=EndDateTimeFormField Label="Дата окончания маршрута">
+		<InputDate Type="InputDateType.DateTimeLocal" @bind-Value="RouteExample.EndDateTime"></InputDate>
+	</FormField>
+
+	<div class="controll-buttons">
+		<button class="btn btn-sm" @onclick=Save>Сохранить</button>
+	</div>
+</div>

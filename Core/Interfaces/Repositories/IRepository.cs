@@ -6,6 +6,7 @@ public interface IRepository<TEntity>
 	Task<TEntity> GetAsync(long id);
 	Task<TEntity> UpdateAsync(TEntity entity);
 	Task DeleteAsync(TEntity entity);
+	Task DeleteAsync(long id);
 	public IQueryable<TEntity> Items { get; }
 }
 
