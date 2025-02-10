@@ -52,7 +52,6 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 		return entity;
 	}
 
-
 	public async Task DeleteAsync(TEntity entity)
 	{
 		Set.Remove(entity);
@@ -69,8 +68,36 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 	{
 		DbContext.Dispose();
 	}
+
 	public async ValueTask DisposeAsync()
 	{
 		await DbContext.DisposeAsync();
+	}
+
+	public async Task UpdateRange(IEnumerable<TEntity> entities)
+	{
+		if (entities == null || !entities.Any())
+		{
+			return;
+		}
+
+		foreach (var entity in entities)
+		{
+			DbContext.Entry(entity).State = EntityState.Modified;
+		}
+
+		await DbContext.SaveChangesAsync();
+	}
+
+	public async Task CreateRange(IEnumerable<TEntity> entities)
+	{
+		if (entities == null || !entities.Any())
+		{
+			return;
+		}
+
+		await DbContext.Set<TEntity>().AddRangeAsync(entities);
+
+		await DbContext.SaveChangesAsync();
 	}
 }

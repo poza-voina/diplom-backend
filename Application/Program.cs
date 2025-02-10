@@ -1,39 +1,47 @@
-using Application.Components;
+using System.Text;
+
 using Infrastructure.Extensions;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
-// Add services to the container.
+
+services.AddControllers();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowAngularApp",
+		policy =>
+		{
+			policy.WithOrigins("http://localhost:4200")
+				.AllowAnyMethod()
+				.AllowAnyHeader();
+		});
+});
+
 
 services.AddDbContext("User ID=postgres;Password=psql;Server=localhost;Port=1111;Database=Ural;Include Error Detail=true");
+
 services.AddRepositories();
 services.AddServices();
 
-services.AddRazorComponents()
-	.AddInteractiveServerComponents();
-
-services.AddServerSideBlazor(options =>
-{
-	options.DetailedErrors = true;
-});
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
 {
-	app.UseExceptionHandler("/Error", createScopeForErrors: true);
-	// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-	app.UseHsts();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
+app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();
 
-app.UseStaticFiles();
-app.UseAntiforgery();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapRazorComponents<App>()
-	.AddInteractiveServerRenderMode();
+app.MapControllers();
 
 app.Run();

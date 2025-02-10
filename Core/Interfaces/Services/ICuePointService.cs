@@ -3,11 +3,10 @@ using Core.Entities;
 
 namespace Core.Interfaces.Services;
 
-public interface ICuePointService
+
+public interface ICuePointService : ICrudService<CuePointDto, CuePointDto>, ICrudService<CuePoint, CuePointDto>, ICrudServiceById<CuePointDto>
 {
-    public Task<CuePoint> CreateCuePoint(CuePoint cuePoint);
-    public Task<CuePoint> UpdateCuePoint(CuePoint cuePoint);
-    public Task DeleteCuePoint(CuePoint cuePoint);
-    public Task<CuePoint> GetCuePoint(long id);
-    public CuePointsDto GetAllCuePointsFromRoute(long routeId);
+	CuePointsDto GetAllCuePointsFromRoute(long routeId);
+
+	Task UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto);
 }

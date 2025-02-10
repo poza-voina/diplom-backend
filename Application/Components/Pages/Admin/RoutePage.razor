@@ -11,9 +11,10 @@
 @if (Route is { })
 {
 	<main>
-		@* <div class="route-map-container"> *@
-		@* 	<MapComponent /> *@
-		@* </div> *@
+		<div class="route-map-container">
+			<MapComponent />
+			<button class="btn btn-sm" @onclick=HandleRedirectToRouteEdit>Редактировать маршрут</button>
+		</div>
 
 		<div class="route-cards-container">
 			<div class="route-card">

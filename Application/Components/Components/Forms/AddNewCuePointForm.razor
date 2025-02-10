@@ -1,0 +1,21 @@
+﻿@using Application.Components.Components.BaseComponents
+@rendermode InteractiveServer
+
+<div>
+	<FormField @ref=TitleField Label="Название:">
+		<InputText @bind-Value=CuePoint.Title></InputText>
+	</FormField>
+
+
+	<FormField @ref=DescriptionField Label="Описание:">
+		<CKEditor @bind-Value="CuePoint.Description" class="form-control form-control-solid form-control-lg"></CKEditor>
+	</FormField>
+
+	<FormField @ref=AddressField Label="Адрес:">
+		<InputText @bind-Value=CuePoint.Address></InputText>
+	</FormField>
+
+	<div class="controll-buttons">
+		<button class="btn btn-sm" @onclick=HandleSave>Сохранить</button>
+	</div>
+</div>

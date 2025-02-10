@@ -28,11 +28,15 @@ public class RouteService(IRepository<Route> _repository) : IRouteService
 	public async Task<RouteDto> GetAsync(long id) =>
 			RouteDto.FromEntity(await _repository.GetAsync(id));
 
-	public async Task<RouteDto> UpdateAsync(RouteDto entity) =>
-			await UpdateAsync(RouteDto.ToEntity(entity));
+	public async Task<RouteDto> UpdateAsync(RouteDto entity)
+	{
+		return await UpdateAsync(RouteDto.ToEntity(entity));
+	}
 
-	public async Task<RouteDto> UpdateAsync(Route entity) =>
-			RouteDto.FromEntity(await _repository.UpdateAsync(entity));
+	public async Task<RouteDto> UpdateAsync(Route entity)
+	{
+		return RouteDto.FromEntity(await _repository.UpdateAsync(entity));
+	}
 
 	public async Task<RouteDto> CreateRoute(Route route)
 	{

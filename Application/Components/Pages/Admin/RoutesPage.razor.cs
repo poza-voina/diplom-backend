@@ -30,11 +30,11 @@ public partial class RoutesPage : ComponentBase
 		}
 	}
 
-	private void GoToRoute(long id)
+	private void GoToRoute(long? id)
 	{
 		Navigation.NavigateTo(string.Format(RouteDto.URI_PATTERN_ADMIN, id));
-
 	}
+
 	private void DeleteRoute()
 	{
 

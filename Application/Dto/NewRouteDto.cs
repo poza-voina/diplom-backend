@@ -74,15 +74,13 @@ public class NewRouteDto : AbstractFormResultData
 
 	public static RouteDto ToCoreDto(NewRouteDto newRoute)
 	{
-		return new RouteDto(
-			id: default,
-			title: newRoute.Title ?? throw new NullReferenceException("The value of 'routeDto.Title' should not be null"),
-			description: newRoute.Description ?? throw new NullReferenceException("The value of 'routeDto.Description' should not be null"),
-			maxCountPeople: newRoute.MaxCountPeople ?? throw new NullReferenceException("The value of 'routeDto.MaxCountPeople' should not be null"),
-			minCountPeople: newRoute.MinCountPeople ?? throw new NullReferenceException("The value of 'routeDto.MinCountPeople' should not be null"),
-			baseCost: newRoute.BaseCost ?? throw new NullReferenceException("The value of 'routeDto.BaseCost' should not be null"),
-			creationDateTime: DateTime.UtcNow,
-			routeTypes: "routeTypes",
-			isHidden: true);
+		return new RouteDto
+		{
+			Title = newRoute.Title ?? throw new NullReferenceException("The value of 'newRoute.Title' should not be null"),
+			Description = newRoute.Description ?? throw new NullReferenceException("The value of 'newRoute.Description' should not be null"),
+			MaxCountPeople = newRoute.MaxCountPeople ?? throw new NullReferenceException("The value of 'newRoute.MaxCountPeople' should not be null"),
+			MinCountPeople = newRoute.MinCountPeople ?? throw new NullReferenceException("The value of 'newRoute.MinCountPeople' should not be null"),
+			BaseCost = newRoute.BaseCost ?? throw new NullReferenceException("The value of 'newRoute.BaseCost' should not be null")
+		};
 	}
 }

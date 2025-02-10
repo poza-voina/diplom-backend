@@ -18,6 +18,9 @@ public partial class RoutePage : ComponentBase
 	[Inject]
 	public required IRouteExampleService RouteExampleService { get; set; }
 
+	[Inject]
+	public required NavigationManager NavigationManager { get; set; }
+
 	public required RouteDto? Route { get; set; }
 
 	public required List<RouteExampleDto> RouteExamples { get; set; }
@@ -50,9 +53,9 @@ public partial class RoutePage : ComponentBase
 		dto.StartDateTime = dto.StartDateTime!.Value.ToUniversalTime();
 		dto.EndDateTime = dto.EndDateTime!.Value.ToUniversalTime();
 	}
-	private Task EditRouteNameAndDescription()
-	{
 
-		throw new NotImplementedException();
+	private void HandleRedirectToRouteEdit()
+	{
+		NavigationManager.NavigateTo($"/admin/route/{Route!.Id}/map");
 	}
 }

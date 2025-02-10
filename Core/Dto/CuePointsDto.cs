@@ -1,9 +1,33 @@
-﻿namespace Core.Dto;
+﻿using Core.Interfaces.Repositories;
+
+namespace Core.Dto;
 
 
-public class CuePointsDto(List<CuePointDto> values)
+public class CuePointsDto
 {
-	public List<CuePointDto> Values { get; set; } = values;
+	public List<CuePointDto> Values { get; set; }
+
+	public CuePointsDto(List<CuePointDto> values)
+	{
+		Values = values;
+		UpdateIndexes();
+	}
+
+	public void UpdateIndexes()
+	{
+		List<int> originalIndexes = Values.Select(x => x.SortIndex).ToList();
+
+		Dictionary<int, int> indexMap = originalIndexes
+			.Distinct()
+			.OrderBy(x => x)
+			.Select((num, index) => new { num, index })
+			.ToDictionary(x => x.num, x => x.index);
+
+		foreach (var item in Values)
+		{
+			item.SortIndex = indexMap[item.SortIndex];
+		}
+	}
 
 	public void Move(int sortIndex, int newSortIndex)
 	{
@@ -54,10 +78,39 @@ public class CuePointsDto(List<CuePointDto> values)
 			}
 		}
 	}
-	public IOrderedEnumerable<CuePointDto> GetCuePoints() => Values.OrderBy(x => x.SortIndex);
+
+	public IOrderedEnumerable<CuePointDto> GetCuePoints()
+	{
+		return Values.OrderBy(x => x.SortIndex);
+	}
+
+	public void UpdateIndex(int currentIndex, int newIndex)
+	{
+		if (currentIndex > newIndex)
+		{
+			foreach (var item in Values)
+			{
+				if (item.SortIndex > currentIndex && item.SortIndex <= newIndex)
+				{
+					item.SortIndex--;
+				}
+			}
+		}
+		else
+		{
+			foreach (var item in Values)
+			{
+				if (item.SortIndex < currentIndex && item.SortIndex >= newIndex)
+				{
+					item.SortIndex++;
+				}
+			}
+		}
+	}
 
 	public void Add(CuePointDto dto)
 	{
+		dto.SortIndex = Values.Select(x => x.SortIndex).Max() + 1;
 		Values.Add(dto);
 	}
 
@@ -82,11 +135,5 @@ public class CuePointsDto(List<CuePointDto> values)
 		{
 			Console.WriteLine($"{item.Title} - {item.SortIndex}");
 		}
-	}
-
-	public void UpdateIndexes()
-	{
-		int a = 0;
-		Values.OrderBy(x => x.SortIndex).Select(x => x.SortIndex = a++);
 	}
 }

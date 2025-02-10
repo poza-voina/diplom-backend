@@ -1,4 +1,5 @@
-﻿using Core.Dto;
+﻿using Application.Components.Components.BaseComponents;
+using Core.Dto;
 using Core.Interfaces.Services;
 using Core.Services;
 using Microsoft.AspNetCore.Components;
@@ -11,21 +12,28 @@ public partial class MapRoutePage : ComponentBase
 	[Parameter]
 	public long? RouteId { get; set; }
 
-	public CuePointsDto CuePoints { get; set; }
+	[Inject]
+	public required ICuePointService CuePointService { get; init; }
+
+	public required Modal ModalWindow { get; set; }
+
+	public required GeoCoderComponent GeoCoderMenu { get; set; }
+
+	public required MapComponent Map { get; set; }
+
+	public required CuePointsDto CuePoints { get; set; }
 	public bool IsHidden { get; set; }
 	public IOrderedEnumerable<CuePointDto> CuePointsTruePosition { get; set; }
 	public CuePointDto CuePointDto { get; set; }
 	public NewCuePointComponent newCuePointComponent;
 
-	[Inject]
-	private ICuePointService CuePointService { get; init; } = default!;
 
 	public ToggleBuffer ToggleBuffer { get; set; } = new ToggleBuffer();
 
 	protected override void OnInitialized()
 	{
 		IsHidden = false;
-		CuePoints = CuePointService.GetAllCuePointsFromRoute(1);
+		CuePoints = CuePointService.GetAllCuePointsFromRoute(RouteId ?? throw new InvalidOperationException());
 		UpdateCuePointsPossition();
 	}
 
@@ -69,29 +77,57 @@ public partial class MapRoutePage : ComponentBase
 		}
 	}
 
-	public void Hide()
-	{
-		IsHidden = true;
-	}
-	public void Show()
-	{
-		IsHidden = false;
-	}
-
 	public void GetNewCuePoint(NewCuePointDto dto)
 	{
 		var a = dto.MapToCuePointDto();
 		var max = CuePoints.Values.Count >= 0 ? CuePoints.Values.Count : 0;
 		a.SortIndex = max;
 		CuePoints.Add(a);
-		newCuePointComponent.Hide();
-		Show();
+		ModalWindow.Hide();
 	}
 
-	public void HandleAddNewCuePoint()
+	public void HandleShowModalCreateNewCuePoint()
 	{
-		Hide();
-		newCuePointComponent.Show();
+		ModalWindow.Show();
+	}
+
+	private void HandleShowMenuForAddingPointToMap()
+	{
+		GeoCoderMenu.Show();
+	}
+
+	public async Task SetPointToMap(GeocodeResult? geocodeResult, CuePointDto? cuePoint)
+	{
+		if (geocodeResult is { } && cuePoint is { })
+		{
+			await Map.AddPointToMap(geocodeResult);
+			cuePoint.Latitude = geocodeResult.Latitude;
+			cuePoint.Longitude = geocodeResult.Longitude;
+		}
+	}
+
+	public async Task UpdateMap()
+	{
+		await Map.AddPointsToMap(
+			CuePoints
+				.Values
+				.Where(x => x.Latitude is { } && x.Longitude is { })
+				.Select(
+					x => new GeocodeResult 
+						{ 
+							Longitude = x.Longitude!.Value, 
+							Latitude = x.Latitude!.Value
+						}));
+	}
+
+	public async Task HandleSave()
+	{
+		foreach (var item in CuePoints.Values)
+		{
+			item.RouteId = RouteId;
+		}
+
+		await CuePointService.UpdateOrCreateRangeAsync(CuePoints.Values);
 	}
 }
 
@@ -123,6 +159,7 @@ public class ToggleBuffer
 	public bool IsOn(int index)
 	{
 		return Values.Contains(index);
+		return true;
 	}
 
 	public void Update(int index, int newIndex)

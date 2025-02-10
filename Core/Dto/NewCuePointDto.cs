@@ -12,7 +12,6 @@ public class NewCuePointDto
 		{
 			Title = Title,
 			Description = Description,
-			Address = Address,
 		};
 	}
 }
