@@ -1,12 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Core.Entities;
-using Core.Interfaces.Entities;
-using Mapster;
 
 namespace Core.Dto;
 
-public class RouteDto : IFilteredRoute
+public class RouteDto
 {
 	public static readonly string URI_PATTERN_ADMIN = "admin/route/{0}";
 
@@ -30,7 +27,7 @@ public class RouteDto : IFilteredRoute
 	public double BaseCost { get; set; }
 
 	[JsonPropertyName("creationDateTime")]
-	public string CreationDateTime { get; set; }
+	public DateTime CreationDateTime { get; set; }
 
 	[JsonPropertyName("routeTypes")]
 	public string RouteTypes { get; set; }
@@ -48,7 +45,7 @@ public class RouteDto : IFilteredRoute
 			MaxCountPeople = dto.MaxCountPeople,
 			MinCountPeople = dto.MinCountPeople,
 			BaseCost = (float)dto.BaseCost,
-			CreationDateTime = DateTime.Parse(dto.CreationDateTime),
+			CreationDateTime = dto.CreationDateTime,
 			RouteTypes = dto.RouteTypes,
 			IsHidden = dto.IsHidden,
 			Id = dto.Id
@@ -65,7 +62,7 @@ public class RouteDto : IFilteredRoute
 			MaxCountPeople = entity.MaxCountPeople,
 			MinCountPeople = entity.MinCountPeople,
 			BaseCost = entity.BaseCost,
-			CreationDateTime = entity.CreationDateTime.ToString(),
+			CreationDateTime = entity.CreationDateTime,
 			RouteTypes = entity.RouteTypes,
 			IsHidden = entity.IsHidden
 		};

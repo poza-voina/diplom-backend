@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
-using Core.Interfaces.Entities;
 
 namespace Core.Entities;
 
-public class Route : BaseEntity, IFilteredRoute
+public class Route : BaseEntity
 {
 	[Column("Title")]
 	public required string Title { get; set; }

@@ -1,7 +1,6 @@
 ﻿using Core.Dto;
 using Core.Entities;
 using Core.Interfaces;
-using Core.Interfaces.Entities;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 
@@ -46,17 +45,6 @@ public class RouteService(IRepository<Route> _repository) : IRouteService
 	public async Task<RouteDto> CreateRoute(RouteDto route)
 	{
 		return RouteDto.FromEntity(await _repository.CreateAsync(RouteDto.ToEntity(route)));
-	}
-
-	public async Task<IEnumerable<IFilteredRoute>?> GetFilteredValuesAsync(IEnumerable<Func<IQueryable<IFilteredRoute>, IQueryable<IFilteredRoute>>> funcs)
-	{
-		IQueryable<IFilteredRoute> routes = _repository.Items;
-		foreach (var func in funcs)
-		{
-			routes = func(routes);
-		}
-
-		return routes.Cast<Route>().Select(x => RouteDto.FromEntity(x)).AsEnumerable();
 	}
 
 	public async Task DeleteRoute(Route route)

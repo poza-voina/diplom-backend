@@ -20,13 +20,13 @@ public class RouteController(IRouteService routeService) : ControllerBase
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> CreateRoute(RouteDto dto)
+	public async Task<IActionResult> CreateRoute([FromBody] RouteDto dto)
 	{
 		return Ok(await routeService.CreateAsync(dto));
 	}
 
 	[HttpPut]
-	public async Task<IActionResult> UpdateRoute(RouteDto dto)
+	public async Task<IActionResult> UpdateRoute([FromBody] RouteDto dto)
 	{
 		return Ok(await routeService.UpdateAsync(dto));
 	}
