@@ -3,6 +3,7 @@ using System;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250215170627_UpdateRoutesNullable")]
+    partial class UpdateRoutesNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,6 @@ namespace Infrastructure.Migrations
                         .HasColumnName("Id");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Address")
-                        .HasColumnType("text")
-                        .HasColumnName("Address");
 
                     b.Property<DateTime?>("CreationDateTime")
                         .HasColumnType("timestamp with time zone")
@@ -82,7 +81,7 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<float?>("BaseCost")
+                    b.Property<float>("BaseCost")
                         .HasColumnType("real")
                         .HasColumnName("BaseCost");
 
@@ -91,6 +90,7 @@ namespace Infrastructure.Migrations
                         .HasColumnName("CreationDateTime");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("Description");
 
@@ -98,13 +98,18 @@ namespace Infrastructure.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("IsHidden");
 
-                    b.Property<int?>("MaxCountPeople")
+                    b.Property<int>("MaxCountPeople")
                         .HasColumnType("integer")
                         .HasColumnName("MaxCountPeople");
 
-                    b.Property<int?>("MinCountPeople")
+                    b.Property<int>("MinCountPeople")
                         .HasColumnType("integer")
                         .HasColumnName("MinCountPeople");
+
+                    b.Property<string>("RouteTypes")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("RouteTypes");
 
                     b.Property<string>("Title")
                         .IsRequired()

@@ -23,6 +23,9 @@ public class CuePoint : BaseEntity
 	[Column("SortIndex")]
 	public required int SortIndex { get; set; }
 
+	[Column("Address")]
+	public string? Address { get; set; }
+
 	[Column("Latitude")]
 	public double? Latitude { get; set; }
 

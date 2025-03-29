@@ -27,5 +27,6 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IRouteService, RouteService>();
 		services.AddScoped<ICuePointService, CuePointService>();
 		services.AddScoped<IRouteExampleService, RouteExampleService>();
+		services.AddScoped<IMapService, MapService>();
 	}
 }

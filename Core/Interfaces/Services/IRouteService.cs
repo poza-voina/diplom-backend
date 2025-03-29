@@ -1,4 +1,5 @@
-﻿using Core.Dto;
+﻿using Application.Controllers;
+using Core.Dto;
 using Core.Entities;
 
 namespace Core.Interfaces.Services;
@@ -7,5 +8,5 @@ public interface IRouteService : ICrudService<RouteDto, RouteDto>, ICrudService<
 {
 	Task HideRoute(RouteDto dto);
 	Task ShowRoute(RouteDto dto);
-	Task<IEnumerable<RouteDto>> GetPerPage(int pageNumber, int countPerPage);
+	Task<IEnumerable<RouteDto>> GetRoutesAsync(GetRoutesDto dto);
 }

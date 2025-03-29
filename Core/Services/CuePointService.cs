@@ -1,4 +1,5 @@
-﻿using Core.Dto;
+﻿using System.Collections;
+using Core.Dto;
 using Core.Entities;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
@@ -10,10 +11,13 @@ public class CuePointService(ICuePointRepository repository) : ICuePointService
 {
 	private ICuePointRepository _repository = repository;
 
-	public CuePointsDto GetAllCuePointsFromRoute(long routeId)
+	public IEnumerable<CuePointDto> GetAllCuePointsFromRoute(long routeId)
 	{
-		var cuePoints = _repository.Items.Where(x => x.RouteId == routeId).Select(x => CuePointDto.FromEntity(x)).ToList() ?? [];
-		return new(cuePoints);
+		return _repository
+			.Items
+			.Where(x => x.RouteId == routeId)
+			.Select(x => CuePointDto.FromEntity(x))
+			.ToList() ?? [];
 	}
 
 	public async Task<CuePointDto> CreateAsync(CuePointDto entity)
@@ -58,10 +62,33 @@ public class CuePointService(ICuePointRepository repository) : ICuePointService
 
 	public async Task UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto)
 	{
+
+		dto = NormalizeSortedIndexes(dto);
+
 		var dtoForCreate = dto.Where(x => x.Id is null);
 		var dtoForUpdate = dto.Where(x => x.Id is { });
 
 		await _repository.UpdateRange(dtoForUpdate.Select(x => CuePointDto.ToEntity(x)));
 		await _repository.CreateRange(dtoForCreate.Select(x => CuePointDto.ToEntity(x)));
+	}
+
+	private IEnumerable<CuePointDto> NormalizeSortedIndexes(IEnumerable<CuePointDto> dto)
+	{
+		int currentIndex = 0;
+		var orderedCuePointDto = dto.OrderBy(x => x.SortIndex, new SortIndexComparer());
+		foreach (var item in orderedCuePointDto)
+		{
+			item.SortIndex = currentIndex++;
+		}
+		return orderedCuePointDto;
+	} 
+}
+
+
+public class SortIndexComparer : IComparer<int>
+{
+	public int Compare(int x, int y)
+	{
+		return x.CompareTo(y);
 	}
 }

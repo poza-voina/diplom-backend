@@ -1,4 +1,6 @@
-﻿using Core.Dto;
+﻿using System.Linq;
+using Application.Controllers;
+using Core.Dto;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Interfaces.Repositories;
@@ -55,11 +57,36 @@ public class RouteService(IRepository<Route> _repository) : IRouteService
 	public async Task<RouteDto> GetRouteAsync(long id) =>
 		RouteDto.FromEntity(await _repository.GetAsync(id));
 
-	public async Task<IEnumerable<RouteDto>> GetPerPage(int pageNumber, int countPerPage)
+	public async Task<IEnumerable<RouteDto>> GetRoutesAsync(GetRoutesDto dto)
 	{
-		var pageData = _repository.Items
-					.Skip((pageNumber - 1) * countPerPage)
-					.Take(countPerPage);
+		var pageData = _repository.Items;
+
+		switch(dto.SortType)
+		{
+			case RoutesSortingType.ByTitle:
+				pageData = pageData.OrderBy(x => x.Title);
+				break;
+			case RoutesSortingType.ByCreating:
+				pageData = pageData.OrderBy(x => x.CreationDateTime);
+				break;
+		}
+		
+		if (dto.Filters is { })
+		{
+			bool isVisibleFilter = dto.Filters.Any(x => x == RoutesFiltersType.ShowVisible);
+			bool isHiddenFilter = dto.Filters.Any(x => x == RoutesFiltersType.ShowHidden);
+			if (isVisibleFilter && !isHiddenFilter)
+			{
+				pageData = pageData.Where(x => !x.IsHidden);
+			}
+			else if (!isVisibleFilter && isHiddenFilter)
+			{
+				pageData = pageData.Where(x => x.IsHidden);
+			}
+		}
+		
+		pageData.Skip((dto.PageNumber - 1) * dto.CountPerPage)
+				.Take(dto.CountPerPage);
 
 		return pageData.Select(x => RouteDto.FromEntity(x)).ToList();
 	}

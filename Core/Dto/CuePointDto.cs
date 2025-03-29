@@ -12,6 +12,7 @@ public class CuePointDto
 	public DateTime? CreationDateTime { get; set; }
 	public long? RouteId { get; set; }
 	public int SortIndex { get; set; } = -1;
+	public string? Address { get; set; }
 	public double? Latitude { get; set; }
 	public double? Longitude { get; set; }
 
@@ -19,7 +20,7 @@ public class CuePointDto
 	{
 		return new CuePoint
 		{
-			Id = dto.Id,
+			Id = dto.Id ?? 0,
 			Title = dto.Title ?? throw new NullReferenceException("The value of 'dto.Title' should not be null"),
 			Description = dto.Description,
 			CuePointType = dto.CuePointType,
@@ -27,7 +28,8 @@ public class CuePointDto
 			RouteId = dto.RouteId ?? throw new NullReferenceException("The value of 'dto.RouteId' should not be null"),
 			SortIndex = dto.SortIndex,
 			Latitude = dto.Latitude,
-			Longitude = dto.Longitude
+			Longitude = dto.Longitude,
+			Address = dto.Address
 		};
 	}
 
@@ -44,6 +46,7 @@ public class CuePointDto
 			SortIndex = entity.SortIndex,
 			Latitude = entity.Latitude,
 			Longitude = entity.Longitude,
+			Address = entity.Address
 		};
 	}
 }

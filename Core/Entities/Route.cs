@@ -8,22 +8,19 @@ public class Route : BaseEntity
 	public required string Title { get; set; }
 
 	[Column("Description")]
-	public required string Description { get; set; }
+	public string? Description { get; set; }
 
 	[Column("MaxCountPeople")]
-	public required int MaxCountPeople { get; set; }
+	public int? MaxCountPeople { get; set; }
 
 	[Column("MinCountPeople")]
-	public required int MinCountPeople { get; set; }
+	public int? MinCountPeople { get; set; }
 
 	[Column("BaseCost")]
-	public required float BaseCost { get; set; }
+	public float? BaseCost { get; set; }
 
 	[Column("CreationDateTime")]
 	public required DateTime CreationDateTime { get; set; }
-
-	[Column("RouteTypes")]
-	public required string RouteTypes { get; set; }
 
 	[Column("IsHidden")]
 	public required bool IsHidden { get; set; }

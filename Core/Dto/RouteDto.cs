@@ -15,22 +15,19 @@ public class RouteDto
 	public string Title { get; set; }
 
 	[JsonPropertyName("description")]
-	public string Description { get; set; }
+	public string? Description { get; set; }
 
 	[JsonPropertyName("maxCountPeople")]
-	public int MaxCountPeople { get; set; }
+	public int? MaxCountPeople { get; set; }
 
 	[JsonPropertyName("minCountPeople")]
-	public int MinCountPeople { get; set; }
+	public int? MinCountPeople { get; set; }
 
 	[JsonPropertyName("baseCost")]
-	public double BaseCost { get; set; }
+	public float? BaseCost { get; set; }
 
 	[JsonPropertyName("creationDateTime")]
-	public DateTime CreationDateTime { get; set; }
-
-	[JsonPropertyName("routeTypes")]
-	public string RouteTypes { get; set; }
+	public DateTime? CreationDateTime { get; set; }
 
 	[JsonPropertyName("isHidden")]
 	public bool IsHidden { get; set; }
@@ -44,9 +41,8 @@ public class RouteDto
 			Description = dto.Description,
 			MaxCountPeople = dto.MaxCountPeople,
 			MinCountPeople = dto.MinCountPeople,
-			BaseCost = (float)dto.BaseCost,
-			CreationDateTime = dto.CreationDateTime,
-			RouteTypes = dto.RouteTypes,
+			BaseCost = dto.BaseCost,
+			CreationDateTime = dto.CreationDateTime ?? DateTime.UtcNow,
 			IsHidden = dto.IsHidden,
 			Id = dto.Id
 		};
@@ -63,7 +59,6 @@ public class RouteDto
 			MinCountPeople = entity.MinCountPeople,
 			BaseCost = entity.BaseCost,
 			CreationDateTime = entity.CreationDateTime,
-			RouteTypes = entity.RouteTypes,
 			IsHidden = entity.IsHidden
 		};
 	}

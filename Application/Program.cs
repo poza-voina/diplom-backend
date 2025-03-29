@@ -22,6 +22,11 @@ builder.Services.AddCors(options =>
 		});
 });
 
+services.AddHttpClient("Geocoder")
+	.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+	{
+		SslProtocols = System.Security.Authentication.SslProtocols.Tls12
+	});
 
 services.AddDbContext("User ID=postgres;Password=psql;Server=localhost;Port=1111;Database=Ural;Include Error Detail=true");
 
