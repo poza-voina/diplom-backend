@@ -1,19 +1,15 @@
-﻿using System.Collections;
-using Core.Dto;
-using Core.Entities;
+﻿using Core.Dto;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
-using Microsoft.VisualBasic;
+using Infrastructure.Entities;
 
 namespace Core.Services;
 
-public class CuePointService(ICuePointRepository repository) : ICuePointService
+public class CuePointService(IRepository<CuePoint> repository) : ICuePointService
 {
-	private ICuePointRepository _repository = repository;
-
 	public IEnumerable<CuePointDto> GetAllCuePointsFromRoute(long routeId)
 	{
-		return _repository
+		return repository
 			.Items
 			.Where(x => x.RouteId == routeId)
 			.Select(x => CuePointDto.FromEntity(x))
@@ -37,27 +33,27 @@ public class CuePointService(ICuePointRepository repository) : ICuePointService
 
 	public async Task<CuePointDto> CreateAsync(CuePoint entity)
 	{
-		return CuePointDto.FromEntity(await _repository.CreateAsync(entity));
+		return CuePointDto.FromEntity(await repository.CreateAsync(entity));
 	}
 
 	public async Task<CuePointDto> UpdateAsync(CuePoint entity)
 	{
-		return CuePointDto.FromEntity(await _repository.UpdateAsync(entity));
+		return CuePointDto.FromEntity(await repository.UpdateAsync(entity));
 	}
 
 	public async Task DeleteAsync(CuePoint entity)
 	{
-		await _repository.DeleteAsync(entity);
+		await repository.DeleteAsync(entity);
 	}
 
 	public async Task DeleteAsync(long id)
 	{
-		await _repository.DeleteAsync(id);
+		await repository.DeleteAsync(id);
 	}
 
 	public async Task<CuePointDto> GetAsync(long id)
 	{
-		return CuePointDto.FromEntity(await _repository.GetAsync(id));
+		return CuePointDto.FromEntity(await repository.GetAsync(id));
 	}
 
 	public async Task UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto)
@@ -68,8 +64,8 @@ public class CuePointService(ICuePointRepository repository) : ICuePointService
 		var dtoForCreate = dto.Where(x => x.Id is null);
 		var dtoForUpdate = dto.Where(x => x.Id is { });
 
-		await _repository.UpdateRange(dtoForUpdate.Select(x => CuePointDto.ToEntity(x)));
-		await _repository.CreateRange(dtoForCreate.Select(x => CuePointDto.ToEntity(x)));
+		await repository.UpdateRange(dtoForUpdate.Select(x => CuePointDto.ToEntity(x)));
+		await repository.CreateRange(dtoForCreate.Select(x => CuePointDto.ToEntity(x)));
 	}
 
 	private IEnumerable<CuePointDto> NormalizeSortedIndexes(IEnumerable<CuePointDto> dto)

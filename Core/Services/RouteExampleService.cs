@@ -1,7 +1,7 @@
 ﻿using Core.Dto;
-using Core.Entities;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Infrastructure.Entities;
 
 namespace Core.Services;
 

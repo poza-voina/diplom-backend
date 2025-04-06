@@ -3,6 +3,7 @@ using System;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250405132539_InitialMigration1")]
+    partial class InitialMigration1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,29 +172,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("routes", (string)null);
                 });
 
-            modelBuilder.Entity("Core.Entities.RouteCategory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("title");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("routeCategories", (string)null);
-                });
-
             modelBuilder.Entity("Core.Entities.RouteExample", b =>
                 {
                     b.Property<long>("Id")
@@ -290,21 +270,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("users", (string)null);
                 });
 
-            modelBuilder.Entity("RouteRouteCategory", b =>
-                {
-                    b.Property<long>("RouteCategoriesId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("RoutesId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("RouteCategoriesId", "RoutesId");
-
-                    b.HasIndex("RoutesId");
-
-                    b.ToTable("RouteRouteCategory");
-                });
-
             modelBuilder.Entity("Core.Entities.RouteExample", b =>
                 {
                     b.HasOne("Core.Entities.Route", "Route")
@@ -314,21 +279,6 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Route");
-                });
-
-            modelBuilder.Entity("RouteRouteCategory", b =>
-                {
-                    b.HasOne("Core.Entities.RouteCategory", null)
-                        .WithMany()
-                        .HasForeignKey("RouteCategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Entities.Route", null)
-                        .WithMany()
-                        .HasForeignKey("RoutesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Core.Entities.Route", b =>

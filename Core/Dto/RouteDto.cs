@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Core.Entities;
+using Infrastructure.Entities;
 
 namespace Core.Dto;
 

@@ -1,6 +1,6 @@
 ﻿using Application.Controllers;
 using Core.Dto;
-using Core.Entities;
+using Infrastructure.Entities;
 
 namespace Core.Interfaces.Services;
 

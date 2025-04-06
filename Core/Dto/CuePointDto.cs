@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Infrastructure.Entities;
+using Mapster;
 
 namespace Core.Dto;
 
@@ -18,35 +19,11 @@ public class CuePointDto
 
 	public static CuePoint ToEntity(CuePointDto dto)
 	{
-		return new CuePoint
-		{
-			Id = dto.Id ?? 0,
-			Title = dto.Title ?? throw new NullReferenceException("The value of 'dto.Title' should not be null"),
-			Description = dto.Description,
-			CuePointType = dto.CuePointType,
-			CreationDateTime = dto.CreationDateTime,
-			RouteId = dto.RouteId ?? throw new NullReferenceException("The value of 'dto.RouteId' should not be null"),
-			SortIndex = dto.SortIndex,
-			Latitude = dto.Latitude,
-			Longitude = dto.Longitude,
-			Address = dto.Address
-		};
+		return dto.Adapt<CuePoint>();
 	}
 
 	public static CuePointDto FromEntity(CuePoint entity)
 	{
-		return new CuePointDto
-		{
-			Id = entity.Id,
-			Title = entity.Title,
-			Description = entity.Description,
-			CuePointType = entity.CuePointType,
-			CreationDateTime = entity.CreationDateTime,
-			RouteId = entity.RouteId,
-			SortIndex = entity.SortIndex,
-			Latitude = entity.Latitude,
-			Longitude = entity.Longitude,
-			Address = entity.Address
-		};
+		return entity.Adapt<CuePointDto>();
 	}
 }

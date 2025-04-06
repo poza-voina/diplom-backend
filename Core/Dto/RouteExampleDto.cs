@@ -1,4 +1,4 @@
-﻿using Core.Entities;
+﻿using Infrastructure.Entities;
 
 namespace Core.Dto;
 

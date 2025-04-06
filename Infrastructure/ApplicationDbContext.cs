@@ -1,13 +1,15 @@
-﻿using Core.Entities;
+﻿using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure;
 
 public class ApplicationDbContext : DbContext
 {
-	DbSet<Route> Routes => Set<Route>();
-	DbSet<CuePoint> CuePoints => Set<CuePoint>();
-	DbSet<RouteExample> RouteExample => Set<RouteExample>();
+	public DbSet<Route> Routes => Set<Route>();
+	public DbSet<CuePoint> CuePoints => Set<CuePoint>();
+	public DbSet<RouteExample> RouteExample => Set<RouteExample>();
+	public DbSet<User> Users => Set<User>();
+	public DbSet<RouteCategory> RouteCategories => Set<RouteCategory>();
 
 	public ApplicationDbContext() { }
 
@@ -15,11 +17,7 @@ public class ApplicationDbContext : DbContext
 
 	protected override void OnModelCreating(ModelBuilder modelBuilder)
 	{
-		modelBuilder
-			.Entity<Route>()
-			.HasMany(e => e.RouteExamples)
-			.WithOne(e => e.Route)
-			.HasForeignKey(e => e.RouteId)
-			.IsRequired();
+		modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
 	}
 }
