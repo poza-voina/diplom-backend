@@ -30,25 +30,8 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 
 	public async Task<TEntity> UpdateAsync(TEntity entity)
 	{
-		ArgumentNullException.ThrowIfNull(entity);
-
-		var trackedEntity = DbContext.Set<TEntity>()
-			.Local
-			.FirstOrDefault(e => e.Id == entity.Id);
-
-		if (trackedEntity is { })
-		{
-			DbContext.Entry(trackedEntity).State = EntityState.Detached;
-		}
-		else if (DbContext.Entry(entity).State is EntityState.Detached)
-		{
-			DbContext.Entry(entity).State = EntityState.Modified;
-		}
-
-		DbContext.Update(entity);
+		Set.Update(entity);
 		await DbContext.SaveChangesAsync();
-		DbContext.Entry(entity).State = EntityState.Detached;
-
 		return entity;
 	}
 

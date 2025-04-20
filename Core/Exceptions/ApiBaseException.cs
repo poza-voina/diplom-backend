@@ -1,4 +1,4 @@
-﻿namespace Application.Exceptions;
+﻿namespace Core.Exceptions;
 
 [Serializable]
 public class ApiBaseException : Exception

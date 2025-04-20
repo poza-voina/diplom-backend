@@ -10,6 +10,7 @@ public class ApplicationDbContext : DbContext
 	public DbSet<RouteExample> RouteExample => Set<RouteExample>();
 	public DbSet<User> Users => Set<User>();
 	public DbSet<RouteCategory> RouteCategories => Set<RouteCategory>();
+	public DbSet<RouteRouteCategory> RouteRouteCategories => Set<RouteRouteCategory>();
 
 	public ApplicationDbContext() { }
 

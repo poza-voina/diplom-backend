@@ -1,7 +1,8 @@
-﻿using Infrastructure.Exceptions;
+﻿using Core.Exceptions;
+using Infrastructure.Exceptions;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace Application.Exceptions;
 

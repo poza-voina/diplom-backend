@@ -1,18 +1,15 @@
-﻿using System.Text.Json.Serialization;
-using Core.Dto.RouteCategory;
-using Infrastructure.Entities;
-using Mapster;
+﻿using Core.Dto.RouteCategory;
+using System.Text.Json.Serialization;
 
-namespace Core.Dto;
+namespace Core.Dto.Route;
 
-public class RouteDto
+public class UpdateRouteRequest
 {
-	#region
 	[JsonPropertyName("id")]
-	public long? Id { get; set; }
+	public long Id { get; set; }
 
 	[JsonPropertyName("title")]
-	public string Title { get; set; }
+	public required string Title { get; set; }
 
 	[JsonPropertyName("description")]
 	public string? Description { get; set; }
@@ -26,14 +23,9 @@ public class RouteDto
 	[JsonPropertyName("baseCost")]
 	public float? BaseCost { get; set; }
 
-	[JsonPropertyName("creationDateTime")]
-	public DateTime? CreationDateTime { get; set; }
-
 	[JsonPropertyName("isHidden")]
 	public bool IsHidden { get; set; }
 
 	[JsonPropertyName("routeCategories")]
-	public IEnumerable<RouteCategoryDto> RouteCategories { get;set;} = [];
-	
-	#endregion
+	public IEnumerable<RouteCategoryDto> RouteCategories { get; set; } = [];
 }

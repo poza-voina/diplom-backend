@@ -4,10 +4,10 @@ using Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Application.Controllers;
+namespace Client.Api.Controllers;
 
 [ApiController]
-[Route("api/users")]
+[Route("api/client/users")]
 public class UserController(IUserService userService) : ControllerBase
 {
 	[HttpPost("register")]
@@ -28,7 +28,7 @@ public class UserController(IUserService userService) : ControllerBase
 	[HttpGet("profile/{id:long}")]
 	public async Task<IResult> GetProfileAsync([FromRoute] long id)
 	{
-		var profile  = await userService.GetProfileAsync(id);
+		var profile = await userService.GetProfileAsync(id);
 		return Results.Ok(profile);
 	}
 }

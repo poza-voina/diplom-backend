@@ -1,65 +1,48 @@
 ﻿using Application.Controllers;
 using Core.Dto;
+using Core.Dto.Route;
+using Core.Dto.RouteCategory;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Infrastructure.Entities;
+using Mapster;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services;
 
-public class RouteService(IRepository<Route> _repository) : IRouteService
+public class RouteService(IRouteRepository _repository) : IRouteService
 {
-
-	public async Task<RouteDto> CreateAsync(RouteDto entity) =>
-	await CreateAsync(RouteDto.ToEntity(entity));
-
-	public async Task<RouteDto> CreateAsync(Route entity) =>
-			RouteDto.FromEntity(await _repository.CreateAsync(entity));
-
-	public async Task DeleteAsync(RouteDto entity) =>
-			await DeleteAsync(RouteDto.ToEntity(entity));
-
-	public async Task DeleteAsync(long id) =>
-			await _repository.DeleteAsync(id);
-
-	public async Task DeleteAsync(Route entity) =>
-			await _repository.DeleteAsync(entity);
-
-	public async Task<RouteDto> GetAsync(long id) =>
-			RouteDto.FromEntity(await _repository.GetAsync(id));
-
-	public async Task<RouteDto> UpdateAsync(RouteDto entity)
+	public async Task<RouteDto> CreateAsync(CreateRouteRequest dto)
 	{
-		return await UpdateAsync(RouteDto.ToEntity(entity));
+		var entity = dto.Adapt<Route>();
+		entity = await _repository.CreateAsync(entity);
+		return await GetItemWithIncludesAsync(entity);
 	}
 
-	public async Task<RouteDto> UpdateAsync(Route entity)
+	public async Task DeleteAsync(long id)
 	{
-		return RouteDto.FromEntity(await _repository.UpdateAsync(entity));
+		await _repository.DeleteAsync(id);
 	}
 
-	public async Task<RouteDto> CreateRoute(Route route)
+	public async Task<RouteDto> GetAsync(long id)
 	{
-		return RouteDto.FromEntity(await _repository.CreateAsync(route));
+		var test = await GetItemWithIncludesAsync(id);
+		return test;
 	}
 
-	public async Task<RouteDto> CreateRoute(RouteDto route)
+	public async Task<RouteDto> UpdateAsync(UpdateRouteRequest dto)
 	{
-		return RouteDto.FromEntity(await _repository.CreateAsync(RouteDto.ToEntity(route)));
+		var entity = dto.Adapt<Route>();
+		entity = await _repository.UpdateRelationShips(entity);
+		var test = await GetItemWithIncludesAsync(entity);
+		return test;
 	}
 
-	public async Task DeleteRoute(Route route)
-	{
-		await _repository.DeleteAsync(route);
-	}
-
-	public async Task<RouteDto> GetRouteAsync(long id) =>
-		RouteDto.FromEntity(await _repository.GetAsync(id));
-
-	public async Task<IEnumerable<RouteDto>> GetRoutesAsync(GetRoutesDto dto)
+	public async Task<IEnumerable<RouteDto>> GetRoutesAsync(GetRoutesRequest dto)
 	{
 		var pageData = _repository.Items;
 
-		switch(dto.SortType)
+		switch (dto.SortType)
 		{
 			case RoutesSortingType.ByTitle:
 				pageData = pageData.OrderBy(x => x.Title);
@@ -68,7 +51,7 @@ public class RouteService(IRepository<Route> _repository) : IRouteService
 				pageData = pageData.OrderBy(x => x.CreationDateTime);
 				break;
 		}
-		
+
 		if (dto.Filters is { })
 		{
 			bool isVisibleFilter = dto.Filters.Any(x => x == RoutesFiltersType.ShowVisible);
@@ -82,28 +65,75 @@ public class RouteService(IRepository<Route> _repository) : IRouteService
 				pageData = pageData.Where(x => x.IsHidden);
 			}
 		}
-		
+
 		pageData.Skip((dto.PageNumber - 1) * dto.CountPerPage)
-				.Take(dto.CountPerPage);
+			.Take(dto.CountPerPage);
 
-		return pageData.Select(x => RouteDto.FromEntity(x)).ToList();
+		return pageData.Include(x => x.RouteCategories)
+			.ToList()
+			.Adapt<IEnumerable<RouteDto>>();
 	}
 
-	public async Task<RouteDto> UpdateRoute(Route route)
+	public async Task HideRoute(long id)
 	{
-		return RouteDto.FromEntity(await _repository.UpdateAsync(route));
+		var entity = await _repository.GetAsync(id);
+		entity.IsHidden = true;
+		await _repository.UpdateAsync(entity);
 	}
 
-	public async Task HideRoute(RouteDto dto)
+	public async Task ShowRoute(long id)
 	{
-		dto.IsHidden = true;
-		await _repository.UpdateAsync(RouteDto.ToEntity(dto));
+		var entity = await _repository.GetAsync(id);
+		entity.IsHidden = false;
+		await _repository.UpdateAsync(entity);
 	}
 
-	public async Task ShowRoute(RouteDto dto)
+	private async Task<RouteDto> GetItemWithIncludesAsync(Route route)
 	{
-		dto.IsHidden = false;
-		var a = await _repository.UpdateAsync(RouteDto.ToEntity(dto));
-		var test = 0;
+		return await GetItemWithIncludesAsync(route.Id);
 	}
+
+	private async Task<RouteDto> GetItemWithIncludesAsync(long? id)
+	{
+		var result = await _repository
+			.Items
+			.Include(x => x.RouteCategories)
+			.FirstOrDefaultAsync(x => id == x.Id) ?? throw new InvalidOperationException("Ошибка получения");
+
+		return result.Adapt<RouteDto>();
+	}
+
+	//private static TypeAdapterConfig GetMapsterOutputConfig()
+	//{
+	//	var mapsterConfig = new TypeAdapterConfig();
+
+	//	mapsterConfig
+	//		.NewConfig<Route, RouteDto>()
+	//		.Map(dest => dest.Categories,
+	//			 src => src.RouteCategories.Select(rc => rc.Adapt<RouteCategory, RouteCategoryDto>(GetCategoriesMapsterConfig())));
+
+	//	return mapsterConfig;
+	//}
+
+	//private static TypeAdapterConfig GetMapsterUpdateConfig()
+	//{
+	//	var mapsterConfig = new TypeAdapterConfig();
+
+	//	mapsterConfig
+	//		.NewConfig<UpdateRouteRequest, Route>()
+	//		.Map(dest => dest.Categories,
+	//			 src => src.RouteCategories.Select(rc => rc.Adapt<RouteCategory, RouteCategoryDto>(GetCategoriesMapsterConfig())));
+
+	//	return mapsterConfig;
+	//}
+
+	//private static TypeAdapterConfig GetCategoriesMapsterConfig()
+	//{
+	//	var mapsterConfig = new TypeAdapterConfig();
+
+	//	mapsterConfig.NewConfig<RouteCategory, RouteCategoryDto>()
+	//		.Map(dest => dest.CountRoutes, src => 0);
+
+	//	return mapsterConfig;
+	//}
 }

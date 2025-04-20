@@ -16,8 +16,8 @@ public class RouteConfiguration : IEntityTypeConfiguration<Route>
 
 		builder
 			.HasMany(x => x.RouteCategories)
-			.WithMany(x => x.Routes);
-
+			.WithMany(x => x.Routes)
+			.UsingEntity<RouteRouteCategory>();
 
 		builder
 			.ToTable("routes");

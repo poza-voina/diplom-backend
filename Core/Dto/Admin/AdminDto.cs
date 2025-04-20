@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿namespace Core.Dto.Admin;
 
-namespace Infrastructure.Entities;
-
-public class Manager
+public class AdminDto
 {
 	public long Id { get; set; }
 
@@ -15,8 +13,4 @@ public class Manager
 	public required string SecondName { get; set; }
 
 	public required string Patronymic { get; set; }
-
-	public required string PasswordHash { get; set; }
-
-	public required byte[] PasswordSalt { get; set; }
 }

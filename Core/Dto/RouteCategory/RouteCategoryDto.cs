@@ -2,8 +2,8 @@
 
 public class RouteCategoryDto
 {
+	public long Id { get; set; }
 	public required string Title { get; set; }
 	public string? Description { get; set; }
-
-	public RouteDto? Route { get; set; }
+	public int CountRoutes { get; set; }
 }

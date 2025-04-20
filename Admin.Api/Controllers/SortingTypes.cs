@@ -1,4 +1,4 @@
-﻿namespace Application.Controllers;
+﻿namespace Admin.Api.Controllers;
 
 public enum SortingTypes
 {

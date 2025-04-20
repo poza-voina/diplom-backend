@@ -16,14 +16,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Core\Core.csproj" />
-		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+		<Folder Include="wwwroot\icons\" />
+		<Folder Include="wwwroot\js\Components\" />
+		<Folder Include="wwwroot\milligram\" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\icons\" />
-	  <Folder Include="wwwroot\js\Components\" />
-	  <Folder Include="wwwroot\milligram\" />
-	</ItemGroup>
+		<ProjectReference Include="..\Core\Core.csproj" />
+		<ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+		<ProjectReference Include="..\Client.Api\Client.Api.csproj" />
+		<ProjectReference Include="..\Admin.Api\Admin.Api.csproj" />
 
+	</ItemGroup>
 </Project>

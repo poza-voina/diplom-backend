@@ -2,18 +2,14 @@
 using Microsoft.Extensions.Configuration;
 using Core.Interfaces.Services;
 using Core.Dto;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Application.Controllers;
+namespace Admin.Api.Controllers;
 
-[Route("api/map")]
+[Route("api/admin/map")]
+[Authorize(Roles = "Admin")]
 public class MapController(IMapService mapService) : ControllerBase
 {
-	[HttpGet("key")]
-	public Task<IActionResult> GetYandexApiKey()
-	{
-		throw new NotImplementedException();
-	}
-
 	[HttpGet("address")]
 	public async Task<IActionResult> GetAddressWithCoords([FromQuery] AddressDto dto)
 	{

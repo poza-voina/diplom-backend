@@ -9,4 +9,6 @@ public interface IRouteCategoryService
 	Task<RouteCategoryDto> UpdateAsync(UpdateRouteCategoryRequest dto);
 	Task DeleteAsync(long id);
 	Task<IEnumerable<RouteCategoryDto>> FilterAsync(FilterRouteCategoryRequest dto);
+	Task<IEnumerable<RouteCategoryDto>> GetByRouteIdAsync(long id);
+	Task<IEnumerable<RouteCategoryDto>> GetAllAsync();
 }

@@ -3,14 +3,18 @@ using Application.Exceptions;
 using Application.Middlewares;
 using Core.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.IdentityModel.Tokens;
+using ClientControllers = Client.Api.Controllers;
+using AdminControllers = Admin.Api.Controllers;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
-services.AddControllers();
+services.AddApiControllers();
+
 services.AddEndpointsApiExplorer();
 services.AddSwaggerGen();
 
