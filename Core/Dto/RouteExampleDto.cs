@@ -15,7 +15,7 @@ public class RouteExampleDto
 		{
 			Id = dto.Id,
 			RouteId = dto.RouteId ?? throw new NullReferenceException("The value of 'dto.RouteId' should not be null"),
-			CreationDateTime = dto.CreationDateTime ?? throw new NullReferenceException("The value of 'dto.CreationDateTime' should not be null"),
+			CreatedAt = dto.CreationDateTime ?? throw new NullReferenceException("The value of 'dto.CreationDateTime' should not be null"),
 			StartDateTime = dto.StartDateTime ?? throw new NullReferenceException("The value of 'dto.StartDateTime' should not be null"),
 			EndDateTime = dto.EndDateTime ?? throw new NullReferenceException("The value of 'dto.EndDateTime' should not be null")
 		};
@@ -24,7 +24,7 @@ public class RouteExampleDto
 		new RouteExampleDto
 		{
 			RouteId = entity.RouteId,
-			CreationDateTime = entity.CreationDateTime,
+			CreationDateTime = entity.CreatedAt,
 			StartDateTime = entity.StartDateTime,
 			EndDateTime = entity.EndDateTime
 		};

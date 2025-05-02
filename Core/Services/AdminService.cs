@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services;
 
-public class AdminService(IRepository<Manager> repository) : IAdminService
+public class AdminService(IRepository<Admin> repository) : IAdminService
 {
 	public async Task<AdminDto> CreateAsync(CreateAdminRequest request)
 	{
-		var admin = request.Adapt<Manager>();
+		var admin = request.Adapt<Admin>();
 		admin = await repository.CreateAsync(admin);
 		return admin.Adapt<AdminDto>();
 	}
@@ -37,7 +37,7 @@ public class AdminService(IRepository<Manager> repository) : IAdminService
 
 	public async Task<AdminDto> UpdateAsync(UpdateAdminRequest request)
 	{
-		var admin = request.Adapt<Manager>();
+		var admin = request.Adapt<Admin>();
 		admin = await repository.UpdateAsync(admin);
 		return admin.Adapt<AdminDto>();
 	}

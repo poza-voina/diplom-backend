@@ -52,8 +52,8 @@ public class RouteConfiguration : IEntityTypeConfiguration<Route>
 			.HasColumnName("baseCost");
 
 		builder
-			.Property(x => x.CreationDateTime)
-			.HasColumnName("creationDateTime")
+			.Property(x => x.CreatedAt)
+			.HasColumnName("createdAt")
 			.HasDefaultValueSql("now() at time zone 'utc'")
 			.IsRequired();
 

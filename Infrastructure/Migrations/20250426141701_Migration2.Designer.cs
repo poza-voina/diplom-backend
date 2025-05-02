@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250413161920_InitialMigration3")]
-    partial class InitialMigration3
+    [Migration("20250426141701_Migration2")]
+    partial class Migration2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,129 @@ namespace Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Infrastructure.Entities.Admin", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("firstName");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("passwordHash");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("passwordSalt");
+
+                    b.Property<string>("SecondName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("secondName");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("admin", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Email = "admin@digitaldiary.site",
+                            FirstName = "Admin",
+                            PasswordHash = "F3B02422468A5817692D96C01BFC510FEF87BDAD18598B8579B3018E21A1E4C6C8A7ADC7EC84A63405ABB8F7207D9E22263995633514BA700829B2B68B23D8B1",
+                            PasswordSalt = new byte[] { 227, 136, 70, 21, 69, 106, 227, 97, 185, 173, 51, 248, 75, 22, 34, 133 },
+                            SecondName = "Admin",
+                            Type = "Super"
+                        });
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.Client", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("registrationDateTime")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("firstName");
+
+                    b.Property<bool>("IsEmailConfirmed")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isEmailConfirmed");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("passwordHash");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("bytea")
+                        .HasColumnName("passwordSalt");
+
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("text")
+                        .HasColumnName("patronymic");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("phoneNumber");
+
+                    b.Property<string>("SecondName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("secondName");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.ToTable("users", (string)null);
+                });
 
             modelBuilder.Entity("Infrastructure.Entities.CuePoint", b =>
                 {
@@ -38,10 +161,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("text")
                         .HasColumnName("address");
 
-                    b.Property<DateTime>("CreationDateTime")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creationDateTime")
+                        .HasColumnName("createdAt")
                         .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("CuePointType")
@@ -78,55 +201,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("cuePoints", (string)null);
                 });
 
-            modelBuilder.Entity("Infrastructure.Entities.Manager", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("firstName");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("password");
-
-                    b.Property<string>("Patronymic")
-                        .HasColumnType("text")
-                        .HasColumnName("patronymic");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("phoneNumber");
-
-                    b.Property<string>("SecondName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("secondName");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
-                    b.ToTable("managers", (string)null);
-                });
-
             modelBuilder.Entity("Infrastructure.Entities.Route", b =>
                 {
                     b.Property<long>("Id")
@@ -140,10 +214,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("real")
                         .HasColumnName("baseCost");
 
-                    b.Property<DateTime>("CreationDateTime")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("creationDateTime")
+                        .HasColumnName("createdAt")
                         .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("Description")
@@ -204,7 +278,7 @@ namespace Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
-                    b.Property<DateTime>("CreationDateTime")
+                    b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("creationDateTime")
@@ -242,70 +316,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("RouteCategoryId");
 
                     b.ToTable("routeRouteCategory", (string)null);
-                });
-
-            modelBuilder.Entity("Infrastructure.Entities.User", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("email");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("firstName");
-
-                    b.Property<bool>("IsEmailConfirmed")
-                        .HasColumnType("boolean")
-                        .HasColumnName("isEmailConfirmed");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("passwordHash");
-
-                    b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
-                        .HasColumnType("bytea")
-                        .HasColumnName("passwordSalt");
-
-                    b.Property<string>("Patronymic")
-                        .HasColumnType("text")
-                        .HasColumnName("patronymic");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("phoneNumber");
-
-                    b.Property<DateTime>("RegistrationDateTime")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("registrationDateTime")
-                        .HasDefaultValueSql("now() at time zone 'utc'");
-
-                    b.Property<string>("SecondName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("secondName");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
-
-                    b.ToTable("users", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.RouteExample", b =>

@@ -38,15 +38,14 @@ public class RouteController(
 		return Results.Ok(cuePointService.GetAllCuePointsFromRoute(id));
 	}
 
-
-	[HttpPost]
+	[HttpPost("toggle-favorite")]
 	[Authorize]
 	public Task<IResult> ToggleFavoriteRoute()
 	{
 		throw new NotImplementedException();
 	}
 
-	[HttpPost]
+	[HttpPost("book")]
 	[Authorize]
 	public Task<IResult> BookAsync()
 	{

@@ -5,7 +5,7 @@ namespace Infrastructure.Entities;
 public class RouteExample : BaseEntity
 {
 	public required long RouteId { get; set; }	
-	public required DateTime CreationDateTime { get; set; }
+	public required DateTime CreatedAt { get; set; }
 	public required DateTime StartDateTime { get; set; }
 	public required DateTime EndDateTime { get; set; }
 

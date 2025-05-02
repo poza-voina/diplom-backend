@@ -25,7 +25,7 @@ public class RouteExampleConfiguration : IEntityTypeConfiguration<RouteExample>
 			.IsRequired();
 
 		builder
-			.Property(x => x.CreationDateTime)
+			.Property(x => x.CreatedAt)
 			.HasColumnName("creationDateTime")
 			.HasDefaultValueSql("now() at time zone 'utc'")
 			.IsRequired();

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.IdentityModel.Tokens;
 using ClientControllers = Client.Api.Controllers;
 using AdminControllers = Admin.Api.Controllers;
+using System.Security.Claims;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,7 +36,7 @@ services.AddHttpClient("Geocoder")
 		SslProtocols = System.Security.Authentication.SslProtocols.Tls12
 	});
 
-var jwtSettings = builder.Configuration.GetSection("Authorization");
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
 
 services
 	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -48,8 +49,12 @@ services
 			ValidateAudience = true,
 			ValidAudience = jwtSettings.GetValue<string>("Audience") ?? throw new Exception("Audience not found"),
 			ValidateLifetime = true,
-			IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("Audience") ?? throw new Exception("Audience not found"))),
-			ValidateIssuerSigningKey = true
+			IssuerSigningKey = new SymmetricSecurityKey(
+	Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SecretKey") ?? throw new Exception("Secret not found"))),
+			ValidateIssuerSigningKey = true,
+
+			RoleClaimType = ClaimTypes.Role,
+			NameClaimType = ClaimTypes.Email
 		};
 	});
 

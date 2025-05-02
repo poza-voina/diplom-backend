@@ -35,8 +35,8 @@ public class CuePointConfiguration : IEntityTypeConfiguration<CuePoint>
 			.IsRequired(false);
 
 		builder
-			.Property(x => x.CreationDateTime)
-			.HasColumnName("creationDateTime")
+			.Property(x => x.CreatedAt)
+			.HasColumnName("createdAt")
 			.HasDefaultValueSql("now() at time zone 'utc'")
 			.IsRequired(true);
 

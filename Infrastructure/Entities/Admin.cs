@@ -1,22 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using Infrastructure.Enums;
 
 namespace Infrastructure.Entities;
 
-public class Manager
+public class Admin : BaseEntity
 {
-	public long Id { get; set; }
-
-	public required string Email { get; set; }
-
-	public required string PhoneNumber { get; set; }
-
 	public required string FirstName { get; set; }
 
 	public required string SecondName { get; set; }
 
-	public required string Patronymic { get; set; }
+	public required string Email { get; set; }
 
 	public required string PasswordHash { get; set; }
 
 	public required byte[] PasswordSalt { get; set; }
+
+	public required AdminType Type { get; set; }
 }

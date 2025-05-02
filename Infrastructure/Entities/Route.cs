@@ -9,7 +9,7 @@ public class Route : BaseEntity
 	public int? MaxCountPeople { get; set; }
 	public int? MinCountPeople { get; set; }
 	public float? BaseCost { get; set; }
-	public required DateTime CreationDateTime { get; set; }
+	public required DateTime CreatedAt { get; set; }
 	public required bool IsHidden { get; set; }
 
 	public virtual ICollection<RouteCategory> RouteCategories { get; set; } = [];

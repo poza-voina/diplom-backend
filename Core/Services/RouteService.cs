@@ -48,7 +48,7 @@ public class RouteService(IRouteRepository _repository) : IRouteService
 				pageData = pageData.OrderBy(x => x.Title);
 				break;
 			case RoutesSortingType.ByCreating:
-				pageData = pageData.OrderBy(x => x.CreationDateTime);
+				pageData = pageData.OrderBy(x => x.CreatedAt);
 				break;
 		}
 

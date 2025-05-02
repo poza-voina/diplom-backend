@@ -8,7 +8,7 @@ public class CuePoint : BaseEntity
 	public required string Title { get; set; }
 	public string? Description { get; set; }
 	public string? CuePointType { get; set; }
-	public DateTime CreationDateTime { get; set; }
+	public DateTime CreatedAt { get; set; }
 	public required long RouteId { get; set; }
 	public required int SortIndex { get; set; }
 	public string? Address { get; set; }

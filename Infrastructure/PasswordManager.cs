@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace Core.Services;
+namespace Infrastructure;
 
 public interface IPasswordManager
 {

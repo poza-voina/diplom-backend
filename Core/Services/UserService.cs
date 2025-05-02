@@ -4,6 +4,7 @@ using System.Text;
 using Core.Dto;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Infrastructure;
 using Infrastructure.Entities;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Core.Services;
 
-public class UserService(IRepository<User> userRepository, IConfiguration configuration, IPasswordManager passwordManager) : IUserService
+public class UserService(IRepository<Client> userRepository, IConfiguration configuration, IPasswordManager passwordManager) : IUserService
 {
 
 	public async Task<string> GetJwtToken(GetJwtTokenRequest dto)
@@ -35,7 +36,7 @@ public class UserService(IRepository<User> userRepository, IConfiguration config
 
 	public async Task RegistrationAsync(RegistrationRequest dto)
 	{
-		var user = dto.Adapt<User>();
+		var user = dto.Adapt<Client>();
 		user.PasswordHash = passwordManager.GetPasswordHash(dto.Password, out var salt);
 		user.PasswordSalt = salt;
 

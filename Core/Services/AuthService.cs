@@ -5,6 +5,7 @@ using Core.Dto.Auth;
 using Core.Exceptions;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Infrastructure;
 using Infrastructure.Entities;
 using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,8 @@ using Microsoft.IdentityModel.Tokens;
 namespace Core.Services;
 
 public class AuthService(
-	IRepository<User> clientRepository,
-	IRepository<Manager> adminRepository,
+	IRepository<Client> clientRepository,
+	IRepository<Admin> adminRepository,
 	IConfiguration configuration,
 	IPasswordManager passwordManager) : IAuthService
 {

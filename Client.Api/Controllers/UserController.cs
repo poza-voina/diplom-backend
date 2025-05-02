@@ -7,17 +7,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace Client.Api.Controllers;
 
 [ApiController]
-[Route("api/client/users")]
+[Route("api/client")]
 public class UserController(IUserService userService) : ControllerBase
 {
-	[HttpPost("register")]
+	[HttpPost("auth/register")]
 	public async Task<IResult> RegistrationAsync([FromBody] RegistrationRequest request)
 	{
 		await userService.RegistrationAsync(request);
 		return Results.Ok();
 	}
 
-	[HttpPost("authorize")]
+	[HttpPost("auth/login")]
 	public async Task<IResult> GetJwtAsync([FromBody] GetJwtTokenRequest request)
 	{
 		var token = await userService.GetJwtToken(request);

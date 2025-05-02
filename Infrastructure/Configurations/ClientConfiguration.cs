@@ -3,10 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class ClientConfiguration : IEntityTypeConfiguration<Client>
 {
-	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<User> builder)
+	public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Client> builder)
 	{
+		builder
+			.ToTable("clients");
+
 		builder
 			.HasIndex(x => x.Email)
 			.IsUnique();
@@ -16,7 +19,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 			.IsUnique();
 
 		builder
-			.Property(x => x.RegistrationDateTime)
+			.Property(x => x.CreatedAt)
 			.HasDefaultValueSql("now()");
 
 		builder
@@ -55,7 +58,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 			.IsRequired();
 
 		builder
-			.Property(x => x.RegistrationDateTime)
+			.Property(x => x.CreatedAt)
 			.HasColumnName("registrationDateTime")
 			.HasDefaultValueSql("now() at time zone 'utc'")
 			.IsRequired();

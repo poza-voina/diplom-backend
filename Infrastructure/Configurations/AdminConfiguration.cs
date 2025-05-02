@@ -1,25 +1,22 @@
 ﻿using Infrastructure.Entities;
+using Infrastructure.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations;
 
-public class ManagerConfiguration : IEntityTypeConfiguration<Manager>
+public class AdminConfiguration : IEntityTypeConfiguration<Admin>
 {
-	public void Configure(EntityTypeBuilder<Manager> builder)
+	public void Configure(EntityTypeBuilder<Admin> builder)
 	{
 		builder
-			.ToTable("managers");
+			.ToTable("admin");
 
 		builder
 			.HasKey(x => x.Id);
 
 		builder
 			.HasIndex(x => x.Email)
-			.IsUnique();
-
-		builder
-			.HasIndex(x => x.PhoneNumber)
 			.IsUnique();
 
 		builder
@@ -33,11 +30,6 @@ public class ManagerConfiguration : IEntityTypeConfiguration<Manager>
 			.IsRequired(true);
 
 		builder
-			.Property(x => x.PhoneNumber)
-			.HasColumnName("phoneNumber")
-			.IsRequired(true);
-
-		builder
 			.Property(x => x.FirstName)
 			.HasColumnName("firstName")
 			.IsRequired(true);
@@ -48,13 +40,18 @@ public class ManagerConfiguration : IEntityTypeConfiguration<Manager>
 			.IsRequired(true);
 
 		builder
-			.Property(x => x.Patronymic)
-			.HasColumnName("patronymic")
-			.IsRequired(false);
+			.Property(x => x.PasswordHash)
+			.HasColumnName("passwordHash")
+			.IsRequired();
 
 		builder
-			.Property(x => x.Password)
-			.HasColumnName("password")
-			.IsRequired(true);
+			.Property(x => x.PasswordSalt)
+			.HasColumnName("passwordSalt")
+			.IsRequired();
+
+		builder
+			.Property(x => x.Type)
+			.HasColumnName("type")
+			.HasConversion<string>();
 	}
 }
