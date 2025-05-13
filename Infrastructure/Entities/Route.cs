@@ -12,6 +12,8 @@ public class Route : BaseEntity
 	public required DateTime CreatedAt { get; set; }
 	public required bool IsHidden { get; set; }
 
+	public Attachment? Attachment { get; set; }
+
 	public virtual ICollection<RouteCategory> RouteCategories { get; set; } = [];
 	public virtual ICollection<RouteExample> RouteExamples { get; set; } = [];
 }

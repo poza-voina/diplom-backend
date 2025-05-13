@@ -106,6 +106,35 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "attachments",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    fileName = table.Column<string>(type: "text", nullable: false),
+                    uri = table.Column<string>(type: "text", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
+                    routeId = table.Column<long>(type: "bigint", nullable: true),
+                    cuePointId = table.Column<long>(type: "bigint", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_attachments", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_attachments_cuePoints_cuePointId",
+                        column: x => x.cuePointId,
+                        principalTable: "cuePoints",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_attachments_routes_routeId",
+                        column: x => x.routeId,
+                        principalTable: "routes",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "routeExamples",
                 columns: table => new
                 {
@@ -163,6 +192,18 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_attachments_cuePointId",
+                table: "attachments",
+                column: "cuePointId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_attachments_routeId",
+                table: "attachments",
+                column: "routeId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_routeExamples_routeId",
                 table: "routeExamples",
                 column: "routeId");
@@ -192,7 +233,7 @@ namespace Infrastructure.Migrations
                 name: "admin");
 
             migrationBuilder.DropTable(
-                name: "cuePoints");
+                name: "attachments");
 
             migrationBuilder.DropTable(
                 name: "routeExamples");
@@ -202,6 +243,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "users");
+
+            migrationBuilder.DropTable(
+                name: "cuePoints");
 
             migrationBuilder.DropTable(
                 name: "routeCategories");

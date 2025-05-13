@@ -1,69 +1,20 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Core.Dto;
+﻿using System.Security.Claims;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
-using Infrastructure;
 using Infrastructure.Entities;
-using Mapster;
+using Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Core.Services;
 
-public class UserService(IRepository<Client> userRepository, IConfiguration configuration, IPasswordManager passwordManager) : IUserService
+public class UserService(IRepository<Client> clientRepository) : IUserService
 {
-
-	public async Task<string> GetJwtToken(GetJwtTokenRequest dto)
+	public async Task<Client> GetClientAsync(ClaimsPrincipal claim)
 	{
-		var user = await userRepository.Items.FirstOrDefaultAsync(x => x.Email == dto.Email) ?? throw new InvalidOperationException("User Not Found");
+		var email = claim.FindFirst(ClaimTypes.Name)?.Value;
 
-		if (!passwordManager.VerifyPassword(dto.Password, user.PasswordHash, user.PasswordSalt))
-		{
-			throw new InvalidOperationException("Password not right");
-		}
+		var client = await clientRepository.Items.SingleOrDefaultAsync(x => x.Email == email) ?? throw new EntityNotFoundException("Не удалось найти пользователя.");
 
-		return GenerateJwtToken(user.Email);
+		return client;
 	}
-
-	public async Task<UserProfileDto> GetProfileAsync(long id)
-	{
-		var entity = await userRepository.GetAsync(id);
-		return entity.Adapt<UserProfileDto>();
-	}
-
-	public async Task RegistrationAsync(RegistrationRequest dto)
-	{
-		var user = dto.Adapt<Client>();
-		user.PasswordHash = passwordManager.GetPasswordHash(dto.Password, out var salt);
-		user.PasswordSalt = salt;
-
-		await userRepository.CreateAsync(user);
-	}
-
-	private string GenerateJwtToken(string email)
-	{
-		var jwtSettings = configuration.GetSection("JwtSettings");
-		var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
-		var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-		var claims = new List<Claim>
-		{
-			new Claim(ClaimTypes.Email, email),
-			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-		};
-
-		var token = new JwtSecurityToken(
-			issuer: jwtSettings["Issuer"],
-			audience: jwtSettings["Audience"],
-			claims: claims,
-			expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpireMinutes"])),
-			signingCredentials: creds
-		);
-
-		return new JwtSecurityTokenHandler().WriteToken(token);
-	}
-
 }

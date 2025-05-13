@@ -10,4 +10,5 @@ public class RouteExample : BaseEntity
 	public required DateTime EndDateTime { get; set; }
 
 	public virtual Route? Route { get; set; }
+	public virtual ICollection<RouteExampleRecord> RouteExampleRecords { get; set; } = [];
 }

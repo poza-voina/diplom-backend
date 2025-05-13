@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Entities;
+using Mapster;
 
 namespace Core.Dto;
 
@@ -9,23 +10,9 @@ public class RouteExampleDto
 	public DateTime? CreationDateTime { get; set; }
 	public DateTime? StartDateTime { get; set; }
 	public DateTime? EndDateTime { get; set; }
+	public long CountRecords { get; set; }
 
-	public static RouteExample ToEntity(RouteExampleDto dto) =>
-		new RouteExample
-		{
-			Id = dto.Id,
-			RouteId = dto.RouteId ?? throw new NullReferenceException("The value of 'dto.RouteId' should not be null"),
-			CreatedAt = dto.CreationDateTime ?? throw new NullReferenceException("The value of 'dto.CreationDateTime' should not be null"),
-			StartDateTime = dto.StartDateTime ?? throw new NullReferenceException("The value of 'dto.StartDateTime' should not be null"),
-			EndDateTime = dto.EndDateTime ?? throw new NullReferenceException("The value of 'dto.EndDateTime' should not be null")
-		};
+	public static RouteExample ToEntity(RouteExampleDto dto) => dto.Adapt<RouteExample>();
 
-	public static RouteExampleDto FromEntity(RouteExample entity) =>
-		new RouteExampleDto
-		{
-			RouteId = entity.RouteId,
-			CreationDateTime = entity.CreatedAt,
-			StartDateTime = entity.StartDateTime,
-			EndDateTime = entity.EndDateTime
-		};
+	public static RouteExampleDto FromEntity(RouteExample entity) => entity.Adapt<RouteExampleDto>();
 }

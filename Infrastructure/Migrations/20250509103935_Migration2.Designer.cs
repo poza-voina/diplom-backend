@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250426141701_Migration2")]
+    [Migration("20250509103935_Migration2")]
     partial class Migration2
     {
         /// <inheritdoc />
@@ -82,6 +82,50 @@ namespace Infrastructure.Migrations
                             SecondName = "Admin",
                             Type = "Super"
                         });
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.Attachment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdAt")
+                        .HasDefaultValueSql("now() at time zone 'utc'");
+
+                    b.Property<long?>("CuePointId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("cuePointId");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("fileName");
+
+                    b.Property<long?>("RouteId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("routeId");
+
+                    b.Property<string>("Uri")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("uri");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CuePointId")
+                        .IsUnique();
+
+                    b.HasIndex("RouteId")
+                        .IsUnique();
+
+                    b.ToTable("attachments", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.Client", b =>
@@ -303,6 +347,37 @@ namespace Infrastructure.Migrations
                     b.ToTable("routeExamples", (string)null);
                 });
 
+            modelBuilder.Entity("Infrastructure.Entities.RouteExampleRecord", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ClientId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("clientId");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("createdAt");
+
+                    b.Property<long>("RouteExampleId")
+                        .HasColumnType("bigint")
+                        .HasColumnName("routeExampleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("RouteExampleId", "ClientId")
+                        .IsUnique();
+
+                    b.ToTable("routeExampleRecords", (string)null);
+                });
+
             modelBuilder.Entity("Infrastructure.Entities.RouteRouteCategory", b =>
                 {
                     b.Property<long>("RouteId")
@@ -318,6 +393,23 @@ namespace Infrastructure.Migrations
                     b.ToTable("routeRouteCategory", (string)null);
                 });
 
+            modelBuilder.Entity("Infrastructure.Entities.Attachment", b =>
+                {
+                    b.HasOne("Infrastructure.Entities.CuePoint", "CuePoint")
+                        .WithOne("Attachment")
+                        .HasForeignKey("Infrastructure.Entities.Attachment", "CuePointId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Infrastructure.Entities.Route", "Route")
+                        .WithOne("Attachment")
+                        .HasForeignKey("Infrastructure.Entities.Attachment", "RouteId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("CuePoint");
+
+                    b.Navigation("Route");
+                });
+
             modelBuilder.Entity("Infrastructure.Entities.RouteExample", b =>
                 {
                     b.HasOne("Infrastructure.Entities.Route", "Route")
@@ -327,6 +419,25 @@ namespace Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Route");
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.RouteExampleRecord", b =>
+                {
+                    b.HasOne("Infrastructure.Entities.Client", "Client")
+                        .WithMany("RouteExampleRecords")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Infrastructure.Entities.RouteExample", "RouteExample")
+                        .WithMany("RouteExampleRecords")
+                        .HasForeignKey("RouteExampleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("RouteExample");
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.RouteRouteCategory", b =>
@@ -348,9 +459,26 @@ namespace Infrastructure.Migrations
                     b.Navigation("RouteCategory");
                 });
 
+            modelBuilder.Entity("Infrastructure.Entities.Client", b =>
+                {
+                    b.Navigation("RouteExampleRecords");
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.CuePoint", b =>
+                {
+                    b.Navigation("Attachment");
+                });
+
             modelBuilder.Entity("Infrastructure.Entities.Route", b =>
                 {
+                    b.Navigation("Attachment");
+
                     b.Navigation("RouteExamples");
+                });
+
+            modelBuilder.Entity("Infrastructure.Entities.RouteExample", b =>
+                {
+                    b.Navigation("RouteExampleRecords");
                 });
 #pragma warning restore 612, 618
         }

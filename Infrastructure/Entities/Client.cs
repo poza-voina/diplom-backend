@@ -13,4 +13,6 @@ public class Client : BaseEntity
 	public required bool IsEmailConfirmed { get; set; }
 	public required string PasswordHash { get; set; }
 	public required byte[] PasswordSalt { get; set; }
+
+	public virtual ICollection<RouteExampleRecord> RouteExampleRecords { get; set; } = [];
 }

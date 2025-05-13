@@ -5,19 +5,58 @@ using Core.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.IdentityModel.Tokens;
-using ClientControllers = Client.Api.Controllers;
-using AdminControllers = Admin.Api.Controllers;
 using System.Security.Claims;
+using Core.Services;
+using Minio;
+using Microsoft.AspNetCore.Http.Json;
+using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 var services = builder.Services;
 
-services.AddApiControllers();
+builder.Services.AddControllers();
+
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options =>
+{
+	options.SerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
+{
+	options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+
 
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddSwaggerGen(options =>
+{
+	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+	{
+		Name = "Authorization",
+		Type = SecuritySchemeType.Http,
+		Scheme = "bearer",
+		BearerFormat = "JWT",
+		In = ParameterLocation.Header,
+		Description = "¬ведите токен JWT в формате: Bearer {token}"
+	});
+
+	options.AddSecurityRequirement(new OpenApiSecurityRequirement
+	{
+		{
+			new OpenApiSecurityScheme
+			{
+				Reference = new OpenApiReference
+				{
+					Type = ReferenceType.SecurityScheme,
+					Id = "Bearer"
+				}
+			},
+			new string[] {}
+		}
+	});
+});
 
 builder.Services.AddCors(options =>
 {
@@ -60,7 +99,15 @@ services
 
 services.AddAuthorization();
 services.AddExceptionHandler<ExceptionHandler>();
-
+services.AddSingleton<IMinioClient>(sp =>
+{
+	var config = sp.GetRequiredService<IConfiguration>();
+	return new MinioClient()
+		.WithEndpoint(config["Minio:Endpoint"])
+		.WithCredentials(config["Minio:AccessKey"], config["Minio:SecretKey"])
+		.WithSSL(false)
+		.Build();
+});
 
 services.AddDbContext("User ID=postgres;Password=psql;Server=localhost;Port=1111;Database=Ural;Include Error Detail=true");
 

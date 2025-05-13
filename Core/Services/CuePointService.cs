@@ -64,8 +64,8 @@ public class CuePointService(IRepository<CuePoint> repository) : ICuePointServic
 		var dtoForCreate = dto.Where(x => x.Id is null);
 		var dtoForUpdate = dto.Where(x => x.Id is { });
 
-		await repository.UpdateRange(dtoForUpdate.Select(x => CuePointDto.ToEntity(x)));
-		await repository.CreateRange(dtoForCreate.Select(x => CuePointDto.ToEntity(x)));
+		await repository.UpdateRangeAsync(dtoForUpdate.Select(x => CuePointDto.ToEntity(x)));
+		await repository.CreateRangeAsync(dtoForCreate.Select(x => CuePointDto.ToEntity(x)));
 	}
 
 	private IEnumerable<CuePointDto> NormalizeSortedIndexes(IEnumerable<CuePointDto> dto)

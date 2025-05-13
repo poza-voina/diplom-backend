@@ -14,7 +14,9 @@ public class ApplicationDbContext : DbContext
 	public DbSet<Admin> Admins => Set<Admin>();
 	public DbSet<RouteCategory> RouteCategories => Set<RouteCategory>();
 	public DbSet<RouteRouteCategory> RouteRouteCategories => Set<RouteRouteCategory>();
-
+	public DbSet<Attachment> Attachments => Set<Attachment>();
+	public DbSet<RouteExampleRecord> RouteExampleRecords => Set<RouteExampleRecord>();
+	
 	public ApplicationDbContext() { }
 
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }

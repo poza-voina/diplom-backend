@@ -7,33 +7,15 @@ namespace Core.Dto;
 
 public class RouteDto
 {
-	#region
-	[JsonPropertyName("id")]
 	public long? Id { get; set; }
-
-	[JsonPropertyName("title")]
-	public string Title { get; set; }
-
-	[JsonPropertyName("description")]
+	public required string Title { get; set; }
 	public string? Description { get; set; }
-
-	[JsonPropertyName("maxCountPeople")]
 	public int? MaxCountPeople { get; set; }
-
-	[JsonPropertyName("minCountPeople")]
-	public int? MinCountPeople { get; set; }
-
-	[JsonPropertyName("baseCost")]
 	public float? BaseCost { get; set; }
-
-	[JsonPropertyName("creationDateTime")]
 	public DateTime? CreationDateTime { get; set; }
-
-	[JsonPropertyName("isHidden")]
 	public bool IsHidden { get; set; }
 
-	[JsonPropertyName("routeCategories")]
+	public Attachment? Attachment { get; set; }
 	public IEnumerable<RouteCategoryDto> RouteCategories { get;set;} = [];
 	
-	#endregion
 }

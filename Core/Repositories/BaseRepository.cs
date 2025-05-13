@@ -57,30 +57,38 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 		await DbContext.DisposeAsync();
 	}
 
-	public async Task UpdateRange(IEnumerable<TEntity> entities)
+	public async Task<IEnumerable<TEntity>> UpdateRangeAsync(IEnumerable<TEntity> entities)
 	{
 		if (entities == null || !entities.Any())
 		{
-			return;
+			return new List<TEntity>();
 		}
 
-		foreach (var entity in entities)
+		var entityList = entities.ToList();
+
+		foreach (var entity in entityList)
 		{
 			DbContext.Entry(entity).State = EntityState.Modified;
 		}
 
 		await DbContext.SaveChangesAsync();
+
+		return entityList;
 	}
 
-	public async Task CreateRange(IEnumerable<TEntity> entities)
+
+	public async Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities)
 	{
 		if (entities == null || !entities.Any())
 		{
-			return;
+			return new List<TEntity>();
 		}
 
-		await DbContext.Set<TEntity>().AddRangeAsync(entities);
+		var entityList = entities.ToList();
 
+		await DbContext.Set<TEntity>().AddRangeAsync(entityList);
 		await DbContext.SaveChangesAsync();
+
+		return entityList;
 	}
 }

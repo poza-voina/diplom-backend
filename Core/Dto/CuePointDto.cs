@@ -16,6 +16,7 @@ public class CuePointDto
 	public string? Address { get; set; }
 	public double? Latitude { get; set; }
 	public double? Longitude { get; set; }
+	public Attachment? Attachment { get; set; }
 
 	public static CuePoint ToEntity(CuePointDto dto)
 	{

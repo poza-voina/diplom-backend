@@ -15,6 +15,8 @@ public class CuePoint : BaseEntity
 	public double? Latitude { get; set; }
 	public double? Longitude { get; set; }
 
+	public Attachment? Attachment { get; set; }
+
 	public Tuple<double, double>? GetLocation()
 	{
 		if (Latitude is null || Longitude is null)

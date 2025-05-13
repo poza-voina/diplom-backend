@@ -1,10 +1,9 @@
-﻿using Core.Dto;
+﻿using System.Security.Claims;
+using Infrastructure.Entities;
 
 namespace Core.Interfaces.Services;
 
 public interface IUserService
 {
-	Task RegistrationAsync(RegistrationRequest dto);
-	Task<string> GetJwtToken(GetJwtTokenRequest dto);
-	Task<UserProfileDto> GetProfileAsync(long id);
+	Task<Client> GetClientAsync(ClaimsPrincipal claim);
 }
