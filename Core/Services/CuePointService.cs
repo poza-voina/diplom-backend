@@ -2,6 +2,7 @@
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Infrastructure.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Services;
 
@@ -11,54 +12,14 @@ public class CuePointService(IRepository<CuePoint> repository) : ICuePointServic
 	{
 		return repository
 			.Items
+			.Include(x => x.Attachment)
 			.Where(x => x.RouteId == routeId)
 			.Select(x => CuePointDto.FromEntity(x))
 			.ToList() ?? [];
 	}
 
-	public async Task<CuePointDto> CreateAsync(CuePointDto entity)
-	{
-		return await CreateAsync(CuePointDto.ToEntity(entity));
-	}
-
-	public async Task<CuePointDto> UpdateAsync(CuePointDto entity)
-	{
-		return await UpdateAsync(CuePointDto.ToEntity(entity));
-	}
-
-	public async Task DeleteAsync(CuePointDto entity)
-	{
-		await DeleteAsync(CuePointDto.ToEntity(entity));
-	}
-
-	public async Task<CuePointDto> CreateAsync(CuePoint entity)
-	{
-		return CuePointDto.FromEntity(await repository.CreateAsync(entity));
-	}
-
-	public async Task<CuePointDto> UpdateAsync(CuePoint entity)
-	{
-		return CuePointDto.FromEntity(await repository.UpdateAsync(entity));
-	}
-
-	public async Task DeleteAsync(CuePoint entity)
-	{
-		await repository.DeleteAsync(entity);
-	}
-
-	public async Task DeleteAsync(long id)
-	{
-		await repository.DeleteAsync(id);
-	}
-
-	public async Task<CuePointDto> GetAsync(long id)
-	{
-		return CuePointDto.FromEntity(await repository.GetAsync(id));
-	}
-
 	public async Task UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto)
 	{
-
 		dto = NormalizeSortedIndexes(dto);
 
 		var dtoForCreate = dto.Where(x => x.Id is null);
