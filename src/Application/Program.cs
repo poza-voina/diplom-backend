@@ -109,7 +109,9 @@ services.AddSingleton<IMinioClient>(sp =>
 		.Build();
 });
 
-services.AddDbContext("User ID=postgres;Password=psql;Server=localhost;Port=1111;Database=Ural;Include Error Detail=true");
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+services.AddDbContext(connectionString);
 
 services.AddRepositories();
 services.AddServices();
@@ -119,11 +121,10 @@ services.AddProblemDetails();
 var app = builder.Build();
 
 app.UseMiddleware<DatabaseExceptionTranslationMiddleware>();
-if (app.Environment.IsDevelopment())
-{
-	app.UseSwagger();
-	app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseCors("AllowAngularApp");
 app.UseHttpsRedirection();

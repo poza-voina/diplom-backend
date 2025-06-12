@@ -1,0 +1,19 @@
+version: '3'
+
+networks:
+  diplom-network:
+    name: diplom-network
+    external: false
+
+services:
+  diplom-backend:
+    image: diplom-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    command: ["dotnet", "ef", "database update"]
+    restart: unless-stopped

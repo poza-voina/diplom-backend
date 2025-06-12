@@ -8,4 +8,5 @@ public interface IMinioService
 
 	Task<List<string>> UploadFilesAsync(List<IFormFile> files);
 
+	Task<string?> GetErrorsAsync();
 }

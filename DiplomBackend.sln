@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docker", "docker", "{728FD8
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationRunner", "src\MigrationRunner\MigrationRunner.csproj", "{34C3A329-7EC9-4828-8F7C-71A086F2F7E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{97127DD1-C4BE-4AE3-BA9B-52C893E49264}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{97127DD1-C4BE-4AE3-BA9B-52C893E49264}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{97127DD1-C4BE-4AE3-BA9B-52C893E49264}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34C3A329-7EC9-4828-8F7C-71A086F2F7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34C3A329-7EC9-4828-8F7C-71A086F2F7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34C3A329-7EC9-4828-8F7C-71A086F2F7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34C3A329-7EC9-4828-8F7C-71A086F2F7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,5 +52,6 @@ Global
 		{5EE9CEE7-C27C-470B-9D05-1E1C84E2D7BD} = {1A861EEE-CF4B-411B-9141-004D2D2DF83D}
 		{24DC0262-CE98-4749-83CA-97CA07D95AE5} = {1A861EEE-CF4B-411B-9141-004D2D2DF83D}
 		{97127DD1-C4BE-4AE3-BA9B-52C893E49264} = {1A861EEE-CF4B-411B-9141-004D2D2DF83D}
+		{34C3A329-7EC9-4828-8F7C-71A086F2F7E1} = {1A861EEE-CF4B-411B-9141-004D2D2DF83D}
 	EndGlobalSection
 EndGlobal

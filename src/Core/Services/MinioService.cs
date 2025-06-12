@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Minio;
 using Minio.DataModel;
 using Minio.DataModel.Args;
+using Minio.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -55,5 +56,23 @@ public class MinioService : IMinioService
 			.WithContentType(file.ContentType));
 
 		return $"/{_bucketName}/{objectName}";
+	}
+
+	public async Task<string?> GetErrorsAsync()
+	{
+		try
+		{
+			var buckets = await _minioClient.ListBucketsAsync();
+			if (buckets.Buckets == null)
+			{
+				return "Cannot access MinIO buckets";
+			}
+		}
+		catch (MinioException ex)
+		{
+			return $"MinIO error: {ex.Message}";
+		}
+
+		return null;
 	}
 }
