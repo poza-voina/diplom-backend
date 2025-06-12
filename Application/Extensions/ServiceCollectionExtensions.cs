@@ -39,6 +39,7 @@ public static class ServiceCollectionExtensions
 		services.AddScoped<IMinioService, MinioService>();
 		services.AddScoped<IUserService, UserService>();
 		services.AddScoped<IBookService, BookService>();
+		services.AddScoped<IRouteExampleRecordService, RouteExampleRecordService>();
 	}
 
 	//public static void AddApiControllers(this IServiceCollection services)

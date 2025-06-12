@@ -1,4 +1,5 @@
-﻿using Core.Interfaces.Repositories;
+﻿using System.Linq;
+using Core.Interfaces.Repositories;
 using Infrastructure;
 using Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,8 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 {
 	protected ApplicationDbContext DbContext { get; }
 	protected DbSet<TEntity> Set { get; }
-	public IQueryable<TEntity> Items => Set.AsQueryable().AsNoTracking();
+	public IQueryable<TEntity> Items =>
+		Set.AsQueryable().AsNoTracking();
 
 	public Repository(ApplicationDbContext dbContext)
 	{
@@ -76,7 +78,6 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 		return entityList;
 	}
 
-
 	public async Task<IEnumerable<TEntity>> CreateRangeAsync(IEnumerable<TEntity> entities)
 	{
 		if (entities == null || !entities.Any())
@@ -90,5 +91,18 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 		await DbContext.SaveChangesAsync();
 
 		return entityList;
+	}
+
+	public async Task DeleteRangeAsync(IEnumerable<long> ids)
+	{
+		var entitiesToDelete = await DbContext.Set<TEntity>()
+			.Where(e => ids.Contains(e.Id.Value))
+			.ToListAsync();
+
+		if (entitiesToDelete.Any())
+		{
+			DbContext.Set<TEntity>().RemoveRange(entitiesToDelete);
+			await DbContext.SaveChangesAsync();
+		}
 	}
 }

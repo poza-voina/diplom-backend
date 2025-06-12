@@ -15,13 +15,10 @@ public class UpdateRouteRequest
 	public string? Description { get; set; }
 
 	[JsonPropertyName("maxCountPeople")]
-	public int? MaxCountPeople { get; set; }
-
-	[JsonPropertyName("minCountPeople")]
-	public int? MinCountPeople { get; set; }
+	public int MaxCountPeople { get; set; }
 
 	[JsonPropertyName("baseCost")]
-	public float? BaseCost { get; set; }
+	public float BaseCost { get; set; }
 
 	[JsonPropertyName("isHidden")]
 	public bool IsHidden { get; set; }

@@ -1,4 +1,5 @@
-﻿using Core.Dto.RouteCategory.RouteExample;
+﻿using Core.Dto;
+using Core.Dto.RouteCategory.RouteExample;
 using Core.Interfaces.Services;
 using Mapster;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ namespace Application.Controllers;
 
 [ApiController]
 [Route("api/route-examples")]
-[Authorize(Roles="Admin")]
+[Authorize(Roles = "Admin")]
 public class RouteExamplesController(IRouteExampleService routeExampleService) : ControllerBase
 {
 	[HttpPut]
@@ -30,5 +31,21 @@ public class RouteExamplesController(IRouteExampleService routeExampleService) :
 	{
 		await routeExampleService.DeleteAsync(id);
 		return Results.Ok();
+	}
+
+	[HttpGet("{id:long}")]
+	public async Task<IResult> GetAsync([FromRoute] long id)
+	{
+		RouteExampleDto result = await routeExampleService.GetAsync(id);
+
+		return Results.Ok(result);
+	}
+
+	[HttpGet("filter")]
+	public async Task<IResult> GetFilteredRoutesExamples([FromQuery] GetFilteredRoutesExamplesRequest request)
+	{
+		var result = await routeExampleService.GetExamplesFilterAsync(request);
+
+		return Results.Ok(result);
 	}
 }

@@ -68,8 +68,8 @@ public class RouteService(IRouteRepository repository) : IRouteService
 			}
 		}
 
-		pageData.Skip((dto.PageNumber - 1) * dto.CountPerPage)
-			.Take(dto.CountPerPage);
+		pageData.Skip((dto.PageNumber - 1) * dto.PageSize)
+			.Take(dto.PageSize);
 
 		return pageData.Include(x => x.RouteCategories)
 			.ToList()
@@ -99,6 +99,7 @@ public class RouteService(IRouteRepository repository) : IRouteService
 	{
 		var result = await repository
 			.Items
+			.Include(x => x.Attachment)
 			.Include(x => x.RouteCategories)
 			.FirstOrDefaultAsync(x => id == x.Id) ?? throw new InvalidOperationException("Ошибка получения");
 
@@ -107,12 +108,19 @@ public class RouteService(IRouteRepository repository) : IRouteService
 
 	public async Task<IEnumerable<RouteDto>> GetVisibleRoutesAsync(GetVisibleRoutesRequest request)
 	{
-		var routesQuery = repository.Items.Where(x => x.IsHidden == false);
+		var routesQuery = repository.Items.Where(x => x.IsHidden == false).Include(x => x.Attachment).Include(x => x.RouteCategories).AsQueryable();
 
-		if(request.PageNumber is { } && request.CountPerPage is { })
+		if (request.Category is { })
 		{
-			routesQuery.Paginate(request.PageNumber.Value, request.CountPerPage.Value);
+			routesQuery = routesQuery.Where(x => x.RouteCategories.Any(rc => rc.Title == request.Category));
 		}
+
+
+		if (request.PageNumber is { } && request.PageSize is { })
+		{
+			routesQuery.Paginate(request.PageNumber.Value, request.PageSize.Value);
+		}
+
 
 		var result = await routesQuery.ToListAsync();
 		return result.Adapt<IEnumerable<RouteDto>>();

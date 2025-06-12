@@ -41,6 +41,15 @@ public class RouteController(IRouteService routeService, IRouteExampleService ro
 		return Ok(await routeService.CreateAsync(dto));
 	}
 
+	[HttpDelete("{id:long}")]
+	[Authorize(Roles = "Admin")]
+	public async Task<IActionResult> DeleteRoute([FromRoute] long id)
+	{
+		await routeService.DeleteAsync(id);
+		return Ok();
+	}
+
+
 	[HttpPut]
 	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> UpdateRoute([FromBody] UpdateRouteRequest dto)
@@ -52,8 +61,8 @@ public class RouteController(IRouteService routeService, IRouteExampleService ro
 	[Authorize(Roles = "Admin")]
 	public async Task<IActionResult> UpdateRouteCuePoints([FromBody] IEnumerable<CuePointDto> dto)
 	{
-		await cuePointService.UpdateOrCreateRangeAsync(dto);
-		return Ok();
+		var result = await cuePointService.UpdateOrCreateRangeAsync(dto);
+		return Ok(result);
 	}
 
 	[HttpGet("visible-routes")]

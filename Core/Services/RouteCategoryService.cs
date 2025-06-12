@@ -30,7 +30,7 @@ public class RouteCategoryService(IRepository<RouteCategory> repository, IReposi
 		var result = await repository
 			.Items
 			.Include(x => x.Routes)
-			.Paginate(dto.PageNumber, dto.CountPerPage)
+			.Paginate(dto.PageNumber, dto.PageSize)
 			.ToListAsync();
 
 		return result.Adapt<IEnumerable<RouteCategoryDto>>(_mapsterConfig);

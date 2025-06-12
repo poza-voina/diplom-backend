@@ -7,5 +7,5 @@ namespace Core.Interfaces.Services;
 public interface ICuePointService
 {
 	IEnumerable<CuePointDto> GetAllCuePointsFromRoute(long routeId);
-	Task UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto);
+	Task<IEnumerable<CuePointDto>> UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto);
 }

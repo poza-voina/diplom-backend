@@ -89,43 +89,9 @@ public class AttachmentsController(IMinioService minioService, IRepository<Attac
 		}
 		else
 		{
+			attachment.Id = existing.Id;
 			await attachmentRepository.UpdateAsync(attachment);
 		}
-	}
-
-	/// <summary>
-	/// Получить все аттачменты для указанных ключевых точек.
-	/// </summary>
-	[HttpGet("cuepoints")]
-	public async Task<IResult> GetAttachmentsByCuePoints([FromQuery] IEnumerable<long> cuePointIds)
-	{
-		if (cuePointIds == null || !cuePointIds.Any())
-		{
-			return Results.BadRequest("Не указаны идентификаторы ключевых точек.");
-		}
-
-		var attachments = await attachmentRepository.Items
-			.Where(x => x.CuePointId != null && cuePointIds.Contains(x.CuePointId.Value))
-			.ToListAsync();
-
-		return Results.Ok(attachments);
-	}
-
-	[HttpGet("route/{routeId:long}")]
-	public async Task<IResult> GetAttachmentByRoute([FromRoute] long routeId)
-	{
-		var attachment = await attachmentRepository.Items.FirstOrDefaultAsync(x => x.RouteId == routeId);
-		return Results.Ok(attachment);
-	}
-
-	[HttpGet("route")]
-	public async Task<IResult> GetAttachmentsByRoutes([FromQuery] IEnumerable<long> routeIds)
-	{
-		var attachment = await attachmentRepository.Items
-			.Where(x => x.RouteId != null)
-			.Where(x => routeIds.Contains(x.RouteId!.Value))
-			.ToListAsync();
-		return Results.Ok(attachment);
 	}
 }
 

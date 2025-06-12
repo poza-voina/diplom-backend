@@ -20,10 +20,9 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 
 		builder
 			.Property(x => x.CreatedAt)
-			.HasDefaultValueSql("now()");
-
-		builder
-			.ToTable("users");
+			.HasColumnName("CreatedAt")
+			.HasDefaultValueSql("now() at time zone 'utc'")
+			.IsRequired();
 
 		builder
 			.HasKey(x => x.Id);
@@ -55,12 +54,6 @@ public class ClientConfiguration : IEntityTypeConfiguration<Client>
 		builder
 			.Property(x => x.PhoneNumber)
 			.HasColumnName("phoneNumber")
-			.IsRequired();
-
-		builder
-			.Property(x => x.CreatedAt)
-			.HasColumnName("registrationDateTime")
-			.HasDefaultValueSql("now() at time zone 'utc'")
 			.IsRequired();
 
 		builder

@@ -30,6 +30,11 @@ public class RouteExampleConfiguration : IEntityTypeConfiguration<RouteExample>
 			.HasDefaultValueSql("now() at time zone 'utc'")
 			.IsRequired();
 
+		builder.Property(x => x.Status)
+			.HasColumnName("status")
+			.HasConversion<string>()
+			.IsRequired();
+
 		builder
 			.Property(x => x.StartDateTime)
 			.HasColumnName("startDateTime")

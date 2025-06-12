@@ -10,7 +10,20 @@ public class RouteExampleRecordDto
 	public required RouteExampleWithRouteDto RouteExample {get;set;}
 }
 
-public class RouteExampleWithRouteDto : RouteExampleDto
+public class RouteExampleRecordWithClientDto : RouteExampleRecordDto
 {
-	public required RouteDto Route { get; set; }
+	public required ClientDto Client { get; set; }
+}
+
+public class ClientDto
+{
+	public required string Email { get; set; }
+
+	public required string FirstName { get; set; }
+
+	public required string SecondName { get; set; }
+
+	public required string PhoneNumber { get; set; }
+	
+	public string? Patronymic { get; set; }
 }

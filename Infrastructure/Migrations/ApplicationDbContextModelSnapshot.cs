@@ -137,7 +137,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("registrationDateTime")
+                        .HasColumnName("CreatedAt")
                         .HasDefaultValueSql("now() at time zone 'utc'");
 
                     b.Property<string>("Email")
@@ -186,7 +186,7 @@ namespace Infrastructure.Migrations
                     b.HasIndex("PhoneNumber")
                         .IsUnique();
 
-                    b.ToTable("users", (string)null);
+                    b.ToTable("clients", (string)null);
                 });
 
             modelBuilder.Entity("Infrastructure.Entities.CuePoint", b =>
@@ -336,6 +336,11 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("startDateTime");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("status");
 
                     b.HasKey("Id");
 

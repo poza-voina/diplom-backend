@@ -9,12 +9,12 @@ namespace Client.Api.Controllers;
 
 [ApiController]
 [Route("api/client")]
-public class ClientController(IClientService userService, IAuthService authService) : ControllerBase
+public class ClientController(IClientService clientService, IAuthService authService, IUserService userService) : ControllerBase
 {
 	[HttpPost("auth/register")]
 	public async Task<IResult> RegistrationAsync([FromBody] RegistrationRequest request)
 	{
-		await userService.RegistrationAsync(request);
+		await clientService.RegistrationAsync(request);
 		return Results.Ok();
 	}
 
@@ -26,10 +26,11 @@ public class ClientController(IClientService userService, IAuthService authServi
 	}
 
 	[Authorize(Roles = "Client")]
-	[HttpGet("profile/{id:long}")]
-	public async Task<IResult> GetProfileAsync([FromRoute] long id)
+	[HttpGet("profile")]
+	public async Task<IResult> GetProfileAsync()
 	{
-		var profile = await userService.GetProfileAsync(id);
+		var client = await userService.GetClientAsync(User);
+		var profile = await clientService.GetProfileAsync(client.Id!.Value);
 		return Results.Ok(profile);
 	}
 }

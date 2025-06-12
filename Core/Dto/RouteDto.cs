@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Dto.Attachment;
 using Core.Dto.RouteCategory;
 using Infrastructure.Entities;
 using Mapster;
@@ -12,10 +13,9 @@ public class RouteDto
 	public string? Description { get; set; }
 	public int? MaxCountPeople { get; set; }
 	public float? BaseCost { get; set; }
-	public DateTime? CreationDateTime { get; set; }
+	public DateTime? CreatedAt { get; set; }
 	public bool IsHidden { get; set; }
 
-	public Attachment? Attachment { get; set; }
+	public AttachmentDto? Attachment { get; set; }
 	public IEnumerable<RouteCategoryDto> RouteCategories { get;set;} = [];
-	
 }

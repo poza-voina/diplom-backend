@@ -1,5 +1,7 @@
-﻿using Core.Dto;
+﻿using System.Linq;
+using Core.Dto;
 using Core.Dto.RouteCategory.RouteExample;
+using Core.Exceptions;
 using Core.Extensions;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
@@ -14,15 +16,24 @@ using Microsoft.EntityFrameworkCore;
 namespace Core.Services;
 
 public class RouteExampleService(
-	IRepository<RouteExample> _repository,
+	IRepository<RouteExample> routeExampleRepository,
 	IDateTimeConverter dateTimeConverter,
 	IRepository<RouteExampleRecord> routeExampleRecordRepository) : IRouteExampleService
 {
 	public async Task<IEnumerable<RouteExampleDto>> GetByMonthAsync(GetRoutesExampleFromMonthRequest request)
 	{
-		var records = await _repository.Items.Include(x => x.RouteExampleRecords)
-			.Where(x => x.CreatedAt.Month == request.Month && x.CreatedAt.Year == request.Year && x.RouteId == request.RouteId)
-			.ToListAsync();
+		var startDate = new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+
+		var endDate = startDate.AddMonths(1);
+
+		var recordsQuery = routeExampleRepository.Items
+			.Include(x => x.RouteExampleRecords)
+			.Where(x => x.StartDateTime >= startDate &&
+						x.StartDateTime < endDate &&
+						x.RouteId == request.RouteId);
+
+
+		var records = await recordsQuery.ToListAsync();
 
 		var result = records.Adapt<List<RouteExampleDto>>();
 		var lengths = records.Select(x => x.RouteExampleRecords.Count).ToList();
@@ -38,28 +49,28 @@ public class RouteExampleService(
 	public async Task<RouteExampleDto> CreateAsync(RouteExampleDto dto)
 	{
 		var entity = RouteExampleDto.ToEntity(dto);
-		var result = await _repository.CreateAsync(entity);
+		var result = await routeExampleRepository.CreateAsync(entity);
 
 		return RouteExampleDto.FromEntity(result);
 	}
 
 	public async Task DeleteAsync(long id) =>
-		await _repository.DeleteAsync(id);
+		await routeExampleRepository.DeleteAsync(id);
 
 	public async Task<RouteExampleDto> GetAsync(long id) =>
-		RouteExampleDto.FromEntity(await _repository.GetAsync(id));
+		RouteExampleDto.FromEntity(await routeExampleRepository.GetAsync(id));
 
 	public async Task<RouteExampleDto> UpdateAsync(RouteExampleDto dto)
 	{
 		var entity = RouteExampleDto.ToEntity(dto);
-		var result = await _repository.UpdateAsync(entity);
+		var result = await routeExampleRepository.UpdateAsync(entity);
 	
 		return RouteExampleDto.FromEntity(result);
 	}
 
 	public async Task<IEnumerable<RouteExampleDto>> GetExamplesByRouteId(long routeId)
 	{
-		return await _repository.Items
+		return await routeExampleRepository.Items
 			.Where(x => x.RouteId == routeId)
 			.Select(x => RouteExampleDto.FromEntity(x)).ToListAsync();
 	}
@@ -77,11 +88,11 @@ public class RouteExampleService(
 		RouteExample result;
 		if (entity.Id is { } || entity.Id > 0)
 		{
-			result = await _repository.UpdateAsync(entity);
+			result = await routeExampleRepository.UpdateAsync(entity);
 		}
 		else
 		{
-			result = await _repository.CreateAsync(entity);
+			result = await routeExampleRepository.CreateAsync(entity);
 		}
 
 		return result.Adapt<RouteExampleDto>();
@@ -108,8 +119,8 @@ public class RouteExampleService(
 		var forCreate = entities
 			.Where(x => x.Id is null || x.Id <= 0);
 
-		var updatingResult = await _repository.UpdateRangeAsync(forUpdate);
-		var creatingResult = await _repository.CreateRangeAsync(forCreate);
+		var updatingResult = await routeExampleRepository.UpdateRangeAsync(forUpdate);
+		var creatingResult = await routeExampleRepository.CreateRangeAsync(forCreate);
 
 		return updatingResult.Concat(creatingResult).Adapt<IEnumerable<RouteExampleDto>>();
 
@@ -134,5 +145,30 @@ public class RouteExampleService(
 			throw new InvalidOperationException("Нельзя отписываться от одобренного маршрута");
 		}
 		await routeExampleRecordRepository.DeleteAsync(record);
+	}
+
+	public async Task<RouteExampleWithRouteDto[]> GetExamplesFilterAsync(GetFilteredRoutesExamplesRequest request)
+	{
+		var query = routeExampleRepository.Items.Include(x => x.RouteExampleRecords).Include(x => x.Route).AsQueryable();
+
+		if (request.IsRouteExamplePending)
+		{
+			query = query.Where(x => x.Status == RouteExampleStatus.Pending);
+		}
+		if (request.IsUserPending)
+		{
+			query = query.Where(x => x.RouteExampleRecords.Count > 0 && x.RouteExampleRecords.Any(r => r.Status == RouteExampleRecordStatus.Pending));
+		}
+		if (request.PageNumber is { } && request.PageSize is { })
+		{
+			query = query.Paginate(request.PageNumber.Value, request.PageSize.Value);
+		} else if (request.PageNumber is { } || request.PageSize is { })
+		{
+			throw new ApiBaseException("При использовании пагинации нужно вводить PageNumber и PageSize");
+		}
+
+		var result = await query.ToListAsync();
+
+		return result.Adapt<RouteExampleWithRouteDto[]>();
 	}
 }

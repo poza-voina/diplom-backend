@@ -14,9 +14,6 @@ public class CreateRouteRequest
 	[JsonPropertyName("maxCountPeople")]
 	public int? MaxCountPeople { get; set; }
 
-	[JsonPropertyName("minCountPeople")]
-	public int? MinCountPeople { get; set; }
-
 	[JsonPropertyName("baseCost")]
 	public float? BaseCost { get; set; }
 

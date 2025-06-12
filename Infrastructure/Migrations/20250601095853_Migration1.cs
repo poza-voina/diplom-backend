@@ -31,6 +31,27 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "clients",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    firstName = table.Column<string>(type: "text", nullable: false),
+                    secondName = table.Column<string>(type: "text", nullable: false),
+                    patronymic = table.Column<string>(type: "text", nullable: true),
+                    phoneNumber = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
+                    isEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    passwordHash = table.Column<string>(type: "text", nullable: false),
+                    passwordSalt = table.Column<byte[]>(type: "bytea", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_clients", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "cuePoints",
                 columns: table => new
                 {
@@ -85,27 +106,6 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "users",
-                columns: table => new
-                {
-                    id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    email = table.Column<string>(type: "text", nullable: false),
-                    firstName = table.Column<string>(type: "text", nullable: false),
-                    secondName = table.Column<string>(type: "text", nullable: false),
-                    patronymic = table.Column<string>(type: "text", nullable: true),
-                    phoneNumber = table.Column<string>(type: "text", nullable: false),
-                    registrationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
-                    isEmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
-                    passwordHash = table.Column<string>(type: "text", nullable: false),
-                    passwordSalt = table.Column<byte[]>(type: "bytea", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_users", x => x.id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "attachments",
                 columns: table => new
                 {
@@ -143,7 +143,8 @@ namespace Infrastructure.Migrations
                     routeId = table.Column<long>(type: "bigint", nullable: false),
                     creationDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
                     startDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    endDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    endDateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    status = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -180,6 +181,34 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "routeExampleRecords",
+                columns: table => new
+                {
+                    id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    clientId = table.Column<long>(type: "bigint", nullable: false),
+                    routeExampleId = table.Column<long>(type: "bigint", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false, defaultValueSql: "now() at time zone 'utc'"),
+                    status = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_routeExampleRecords", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_routeExampleRecords_clients_clientId",
+                        column: x => x.clientId,
+                        principalTable: "clients",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_routeExampleRecords_routeExamples_routeExampleId",
+                        column: x => x.routeExampleId,
+                        principalTable: "routeExamples",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "admin",
                 columns: new[] { "id", "email", "firstName", "passwordHash", "passwordSalt", "secondName", "type" },
@@ -204,6 +233,29 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_clients_email",
+                table: "clients",
+                column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_clients_phoneNumber",
+                table: "clients",
+                column: "phoneNumber",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_routeExampleRecords_clientId",
+                table: "routeExampleRecords",
+                column: "clientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_routeExampleRecords_routeExampleId_clientId",
+                table: "routeExampleRecords",
+                columns: new[] { "routeExampleId", "clientId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_routeExamples_routeId",
                 table: "routeExamples",
                 column: "routeId");
@@ -212,18 +264,6 @@ namespace Infrastructure.Migrations
                 name: "IX_routeRouteCategory_RouteCategoryId",
                 table: "routeRouteCategory",
                 column: "RouteCategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_users_email",
-                table: "users",
-                column: "email",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_users_phoneNumber",
-                table: "users",
-                column: "phoneNumber",
-                unique: true);
         }
 
         /// <inheritdoc />
@@ -236,16 +276,19 @@ namespace Infrastructure.Migrations
                 name: "attachments");
 
             migrationBuilder.DropTable(
-                name: "routeExamples");
+                name: "routeExampleRecords");
 
             migrationBuilder.DropTable(
                 name: "routeRouteCategory");
 
             migrationBuilder.DropTable(
-                name: "users");
+                name: "cuePoints");
 
             migrationBuilder.DropTable(
-                name: "cuePoints");
+                name: "clients");
+
+            migrationBuilder.DropTable(
+                name: "routeExamples");
 
             migrationBuilder.DropTable(
                 name: "routeCategories");

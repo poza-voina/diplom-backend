@@ -18,16 +18,47 @@ public class CuePointService(IRepository<CuePoint> repository) : ICuePointServic
 			.ToList() ?? [];
 	}
 
-	public async Task UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto)
+	public async Task<IEnumerable<CuePointDto>> UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto)
 	{
-		dto = NormalizeSortedIndexes(dto);
+		if (dto == null || !dto.Any())
+			throw new InvalidOperationException("Не удалось найти маршрут");
 
-		var dtoForCreate = dto.Where(x => x.Id is null);
-		var dtoForUpdate = dto.Where(x => x.Id is { });
+		var routeId = dto.First().RouteId;
 
-		await repository.UpdateRangeAsync(dtoForUpdate.Select(x => CuePointDto.ToEntity(x)));
-		await repository.CreateRangeAsync(dtoForCreate.Select(x => CuePointDto.ToEntity(x)));
+		var normalizedDtos = NormalizeSortedIndexes(dto).ToList();
+
+		var forCreate = normalizedDtos.Where(x => x.Id is null).ToList();
+		var forUpdate = normalizedDtos.Where(x => x.Id is not null).ToList();
+
+		// Получаем все существующие точки для этого маршрута
+		var existingEntities = await repository.Items.Where(x => x.RouteId == routeId.Value).ToListAsync();
+
+		// Идентификаторы, которые пришли во входящих данных
+		var incomingIds = forUpdate.Select(x => x.Id!.Value).ToHashSet();
+
+		// Удаляем те, которых нет во входящих
+		var toDeleteIds = existingEntities
+			.Where(e => !incomingIds.Contains(e.Id.Value))
+			.Select(e => e.Id.Value)
+			.ToList();
+		if (toDeleteIds.Any())
+		{
+			await repository.DeleteRangeAsync(toDeleteIds);
+		}
+
+		// Обновляем существующие
+		await repository.UpdateRangeAsync(forUpdate.Select(CuePointDto.ToEntity));
+
+		// Создаём новые
+		var createdEntities = await repository.CreateRangeAsync(forCreate.Select(CuePointDto.ToEntity));
+		var createdDtos = createdEntities.Select(CuePointDto.FromEntity);
+
+		// Объединяем и сортируем
+		var allDtos = forUpdate.Concat(createdDtos);
+
+		return allDtos.OrderBy(x => x.SortIndex);
 	}
+
 
 	private IEnumerable<CuePointDto> NormalizeSortedIndexes(IEnumerable<CuePointDto> dto)
 	{
@@ -38,7 +69,7 @@ public class CuePointService(IRepository<CuePoint> repository) : ICuePointServic
 			item.SortIndex = currentIndex++;
 		}
 		return orderedCuePointDto;
-	} 
+	}
 }
 
 

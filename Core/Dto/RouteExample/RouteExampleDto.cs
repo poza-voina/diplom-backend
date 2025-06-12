@@ -10,6 +10,7 @@ public class RouteExampleDto
 	public DateTime? CreationDateTime { get; set; }
 	public DateTime? StartDateTime { get; set; }
 	public DateTime? EndDateTime { get; set; }
+	public RouteExampleStatus Status { get; set; }
 	public long CountRecords { get; set; }
 
 	public static RouteExample ToEntity(RouteExampleDto dto) => dto.Adapt<RouteExample>();

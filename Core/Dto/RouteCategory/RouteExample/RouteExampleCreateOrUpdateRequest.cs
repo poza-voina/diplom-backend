@@ -1,4 +1,6 @@
-﻿namespace Core.Dto.RouteCategory.RouteExample;
+﻿using Infrastructure.Entities;
+
+namespace Core.Dto.RouteCategory.RouteExample;
 
 public class RouteExampleCreateOrUpdateRequest
 {
@@ -6,4 +8,5 @@ public class RouteExampleCreateOrUpdateRequest
 	public long RouteId { get; set; }
 	public DateTime StartDateTime { get; set; }
 	public DateTime EndDateTime { get; set; }
+	public RouteExampleStatus Status { get; set; }
 }
