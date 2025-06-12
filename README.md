@@ -24,6 +24,14 @@ docker compose -f docker-compose.infrastructure.yml up -d
 ```
 docker run --rm --network diplombackend_default --env-file .env diplom-backend-migration-runner
 ```
+
+# Конфигурация Minio
+```
+docker run --rm -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin --network diplombackend_default \
+  -v %cd%/minio_setup.sh:/minio_setup.sh:ro \
+  -v %cd%/minio-policy.json:/minio-policy.json:ro \
+  minio/mc /bin/sh /minio_setup.sh
+```
 ---
 # Локально
 Строка подключения берется из appsettings.json

@@ -34,19 +34,3 @@ services:
       - "9001:9001"
     command: server /data --console-address ":9001"
     restart: unless-stopped
-
-  minio_setup:
-    image: minio/mc
-    depends_on:
-      - minio
-    entrypoint: ["/bin/sh", "/scripts/minio_setup.sh"]
-    environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
-    volumes:
-      - ./minio_setup.sh:/scripts/minio_setup.sh:ro
-      - ./minio-policy.json:/scripts/minio-policy.json:ro
-    restart: "no"
-    deploy:
-      restart_policy:
-        condition: none
