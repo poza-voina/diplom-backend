@@ -25,6 +25,11 @@ public class ExceptionHandler(IProblemDetailsService problemDetailsService) : IE
 			problemDetails.Type = nameof(Results.NotFound);
 			problemDetails.Status = StatusCodes.Status404NotFound;
 		}
+		else if (exception is ApiValidationException)
+		{
+			problemDetails.Type = nameof(Results.BadRequest);
+			problemDetails.Status = StatusCodes.Status400BadRequest;
+		}
 		else if (exception is ApiBaseException or InfrastructureBaseException)
 		{
 			problemDetails.Type = nameof(Results.BadRequest);

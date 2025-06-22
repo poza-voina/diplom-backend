@@ -25,6 +25,10 @@ public class RouteCategoryConfiguration : IEntityTypeConfiguration<RouteCategory
 			.IsRequired();
 
 		builder
+			.HasIndex(x => x.Title)
+			.IsUnique();
+
+		builder
 			.Property(x => x.Description)
 			.HasColumnName("description");
 	}

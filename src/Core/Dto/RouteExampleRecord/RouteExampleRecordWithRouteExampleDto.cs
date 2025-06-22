@@ -4,13 +4,18 @@ namespace Core.Dto;
 
 public class RouteExampleRecordDto
 {
-	public long ClientId { get; set; }
-	public long RouteExampleId { get; set; }
-	public RouteExampleRecordStatus Status { get; set; }
+	public long Id { get; set; }
+    public long ClientId { get; set; }
+    public long RouteExampleId { get; set; }
+    public RouteExampleRecordStatus Status { get; set; }
+}
+
+public class RouteExampleRecordWithRouteExampleDto : RouteExampleRecordDto
+{
 	public required RouteExampleWithRouteDto RouteExample {get;set;}
 }
 
-public class RouteExampleRecordWithClientDto : RouteExampleRecordDto
+public class RouteExampleRecordWithClientDto : RouteExampleRecordWithRouteExampleDto
 {
 	public required ClientDto Client { get; set; }
 }

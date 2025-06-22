@@ -1,8 +1,9 @@
 ﻿namespace Core.Dto.Route;
 
-public class GetVisibleRoutesRequest
+public class GetVisibleRoutesRequest : IPaggination
 {
-	public int? PageNumber { get; set; }
+	public string? Title {get;set;}
+    public int? PageNumber { get; set; }
 	public int? PageSize { get; set; }
 	public string? Category { get; set; }
 }

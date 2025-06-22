@@ -9,6 +9,12 @@ public static class QueryableExtensions
 		return query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 	}
 
+	public static int GetTotalsPages<T>(this IQueryable<T> query, int pageSize)
+	{
+        int totalCount = query.Count();
+        return (int)Math.Ceiling((double)totalCount / pageSize);
+    }
+
 	public static IQueryable<TEntity> IncludeAllCollections<TEntity>(this DbSet<TEntity> dbSet, DbContext context)
 		where TEntity : class
 	{

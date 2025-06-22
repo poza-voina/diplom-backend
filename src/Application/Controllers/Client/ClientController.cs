@@ -33,4 +33,14 @@ public class ClientController(IClientService clientService, IAuthService authSer
 		var profile = await clientService.GetProfileAsync(client.Id!.Value);
 		return Results.Ok(profile);
 	}
+
+	[Authorize(Roles ="Client")]
+	[HttpPut("profile")]
+	public async Task<IResult> UpdateProfileAsync([FromBody] RegistrationRequest request)
+	{
+        var client = await userService.GetClientAsync(User);
+        await clientService.UpdateProfileAsync(client.Id!.Value, request);
+
+		return Results.Ok();
+    }
 }

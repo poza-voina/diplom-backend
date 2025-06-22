@@ -1,13 +1,19 @@
-﻿using System.Linq;
-using Application.Controllers;
+﻿using Application.Controllers;
+using Core.Dto;
 using Core.Dto.Route;
 using Core.Dto.RouteCategory;
+using Core.Exceptions;
 using Core.Extensions;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Humanizer;
 using Infrastructure.Entities;
+using Infrastructure.Exceptions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Core.Services;
 
@@ -34,14 +40,16 @@ public class RouteService(IRouteRepository repository) : IRouteService
 	public async Task<RouteDto> UpdateAsync(UpdateRouteRequest dto)
 	{
 		var entity = dto.Adapt<Route>();
-		entity = await repository.UpdateRelationShips(entity);
+		entity = await repository.UpdateRoute(entity);
 		var test = await GetItemWithIncludesAsync(entity);
 		return test;
 	}
 
-	public async Task<IEnumerable<RouteDto>> GetRoutesAsync(GetRoutesRequest dto)
+	public async Task<CollectionDto<RouteDto>> GetRoutesAsync(GetRoutesRequest dto)
 	{
-		var pageData = repository.Items;
+        ApiValidationException.ThrowIfPagginateIncorrect(dto);
+
+		var pageData = repository.Items.Include(x => x.RouteCategories).AsQueryable();
 
 		switch (dto.SortType)
 		{
@@ -52,6 +60,12 @@ public class RouteService(IRouteRepository repository) : IRouteService
 				pageData = pageData.OrderBy(x => x.CreatedAt);
 				break;
 		}
+
+		if (!string.IsNullOrEmpty(dto.Title))
+		{
+            string title = System.Web.HttpUtility.UrlDecode(dto.Title).ToLower();
+            pageData = pageData.Where(x => x.Title != null && x.Title.ToLower().Contains(title));
+        }
 
 		if (dto.Filters is { })
 		{
@@ -67,13 +81,21 @@ public class RouteService(IRouteRepository repository) : IRouteService
 			}
 		}
 
-		pageData.Skip((dto.PageNumber - 1) * dto.PageSize)
-			.Take(dto.PageSize);
+		var totalsPages = 0;
+		if (dto.PageNumber is { } && dto.PageSize is { })
+		{
+            totalsPages = pageData.GetTotalsPages(dto.PageSize.Value);
+            pageData = pageData.Paginate(dto.PageNumber.Value, dto.PageSize.Value);
+        }
 
-		var result = await pageData.Include(x => x.RouteCategories)
+        var resultData = await pageData
 			.ToListAsync();
 
-		return result.Adapt<IEnumerable<RouteDto>>();
+		return new CollectionDto<RouteDto>
+		{
+			Values = resultData.Adapt<IEnumerable<RouteDto>>(),
+			TotalPages = totalsPages
+		};
 	}
 
 	public async Task HideRoute(long id)
@@ -101,28 +123,52 @@ public class RouteService(IRouteRepository repository) : IRouteService
 			.Items
 			.Include(x => x.Attachment)
 			.Include(x => x.RouteCategories)
-			.FirstOrDefaultAsync(x => id == x.Id) ?? throw new InvalidOperationException("Ошибка получения");
+			.FirstOrDefaultAsync(x => id == x.Id) ?? throw new EntityNotFoundException("Ошибка получения");
 
 		return result.Adapt<RouteDto>();
 	}
 
-	public async Task<IEnumerable<RouteDto>> GetVisibleRoutesAsync(GetVisibleRoutesRequest request)
+	public async Task<CollectionDto<RouteDtoWithExamplesMarker>> GetVisibleRoutesAsync(GetVisibleRoutesRequest request)
 	{
-		var routesQuery = repository.Items.Where(x => x.IsHidden == false).Include(x => x.Attachment).Include(x => x.RouteCategories).AsQueryable();
+		var routesQuery = repository
+			.Items
+			.Where(x => x.IsHidden == false)
+			.Include(x => x.Attachment)
+			.Include(x => x.RouteCategories)
+			.Include(x => x.RouteExamples)
+			.AsQueryable();
 
 		if (request.Category is { })
 		{
 			routesQuery = routesQuery.Where(x => x.RouteCategories.Any(rc => rc.Title == request.Category));
 		}
 
+        if (!string.IsNullOrEmpty(request.Title))
+        {
+            string title = System.Web.HttpUtility.UrlDecode(request.Title).ToLower();
+            routesQuery = routesQuery.Where(x => x.Title != null && x.Title.ToLower().Contains(title));
+        }
 
+        routesQuery = routesQuery.OrderByDescending(x => x.RouteExamples.Any(x => x.Status == RouteExampleStatus.Pending));
+
+        var totalPages = 0;
 		if (request.PageNumber is { } && request.PageSize is { })
 		{
-			routesQuery.Paginate(request.PageNumber.Value, request.PageSize.Value);
-		}
+            totalPages = routesQuery.GetTotalsPages(request.PageSize.Value);
+            routesQuery = routesQuery.Paginate(request.PageNumber.Value, request.PageSize.Value);
+        }
 
+		var routes = await routesQuery.ToListAsync();
+        var result = routes.Adapt<List<RouteDtoWithExamplesMarker>>();
+        for (int i = 0; i < result.Count; i++)
+        {
+            result[i].IsExamples = routes[i].RouteExamples.Any(x => x.Status == RouteExampleStatus.Pending);
+        }
 
-		var result = await routesQuery.ToListAsync();
-		return result.Adapt<IEnumerable<RouteDto>>();
+        return new CollectionDto<RouteDtoWithExamplesMarker>
+		{
+			Values = result,
+			TotalPages = totalPages
+        };
 	}
 }

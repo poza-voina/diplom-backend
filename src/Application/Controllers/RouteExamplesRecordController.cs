@@ -1,4 +1,5 @@
 ﻿using Core.Dto;
+using Core.Dto.RouteExampleRecord;
 using Core.Extensions;
 using Core.Interfaces.Repositories;
 using Core.Services;
@@ -22,4 +23,19 @@ public class RouteExamplesRecordController(IRouteExampleRecordService routeExamp
 
 		return Results.Ok(result);
 	}
+
+	[HttpPut("change-status")]
+	public async Task<IResult> ChangeStatus([FromBody] ChangeRecordsStatusRequest request)
+	{
+        var result = await routeExampleRecordService.ChangeStatusAsync(request);
+		return Results.Ok(result);
+	}
+
+	[HttpPut("change-statuses")]
+	public async Task<IResult> ChangeStatuses([FromBody] IEnumerable<RouteExampleRecordDto> request)
+	{
+		var result = await routeExampleRecordService.ChangeStatusesAsync(request);
+		return Results.Ok(result);
+	}
 }
+

@@ -1,4 +1,5 @@
-﻿using Core.Dto.Route;
+﻿using Core.Dto;
+using Core.Dto.Route;
 using Infrastructure.Entities;
 
 namespace Core.Interfaces.Services;
@@ -11,6 +12,6 @@ public interface IRouteService
 	Task<RouteDto> UpdateAsync(UpdateRouteRequest request);
 	Task HideRoute(long id);
 	Task ShowRoute(long id);
-	Task<IEnumerable<RouteDto>> GetRoutesAsync(GetRoutesRequest request);
-	Task<IEnumerable<RouteDto>> GetVisibleRoutesAsync(GetVisibleRoutesRequest request);
+	Task<CollectionDto<RouteDto>> GetRoutesAsync(GetRoutesRequest request);
+	Task<CollectionDto<RouteDtoWithExamplesMarker>> GetVisibleRoutesAsync(GetVisibleRoutesRequest request);
 }

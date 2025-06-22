@@ -11,9 +11,9 @@ public interface IRouteExampleService
 	Task<RouteExampleDto> CreateOrUpdateAsync(RouteExampleCreateOrUpdateRequest request);
 	Task<IEnumerable<RouteExampleDto>> CreateOrUpdateByRouteAsync(IEnumerable<RouteExampleCreateOrUpdateRequest> request);
 	Task<IEnumerable<RouteExampleDto>> GetByMonthAsync(GetRoutesExampleFromMonthRequest request);
-	Task BookAsync(Client client, long routeExampleId);
-	Task UnBookAsync(Client client, long routeExampleId);
+	Task<RouteExampleRecordWithRouteExampleDto> BookAsync(Client client, long routeExampleId);
+	Task<RouteExampleRecordWithRouteExampleDto> UnBookAsync(Client client, long routeExampleId);
 	Task DeleteAsync(long id);
-	Task<RouteExampleWithRouteDto[]> GetExamplesFilterAsync(GetFilteredRoutesExamplesRequest request);
+	Task<CollectionDto<RouteExampleWithRouteDto>> GetExamplesFilterAsync(GetFilteredRoutesExamplesRequest request);
 	Task<RouteExampleDto> GetAsync(long id);
 }

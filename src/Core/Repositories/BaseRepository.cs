@@ -32,7 +32,8 @@ public class Repository<TEntity> : IRepository<TEntity>, IDisposable, IAsyncDisp
 
 	public async Task<TEntity> UpdateAsync(TEntity entity)
 	{
-		Set.Update(entity);
+        DbContext.Attach(entity);
+        Set.Update(entity);
 		await DbContext.SaveChangesAsync();
 		return entity;
 	}

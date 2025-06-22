@@ -46,7 +46,7 @@ public class RouteCategoryController(IRouteCategoryService routeCategoryService)
 		return Results.Ok(routeCategory);
 	}
 
-	[HttpDelete]
+	[HttpDelete("{id:long}")]
 	[Authorize(Roles = "Admin")]
 	public async Task<IResult> DeleteAsync([FromRoute] long id)
 	{

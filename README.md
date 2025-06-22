@@ -9,6 +9,10 @@ docker build -t diplom-backend -f Dockerfile.app
 ```
 docker build -t diplom-backend-migration-runner -f Dockerfile.migration-runner 
 ```
+**Сборка minio/mc с sh**
+```
+docker build -t minio-setup -f Dockerfile.minio-setup
+```
 ---
 # Запуск контейнеров Docker
 **Запуск контейнера с приложением**
@@ -22,15 +26,12 @@ docker compose -f docker-compose.infrastructure.yml up -d
 ---
 # Принять миграции
 ```
-docker run --rm --network diplombackend_default --env-file .env diplom-backend-migration-runner
+docker run --rm --network diplom-backend_default --env-file .env diplom-backend-migration-runner
 ```
 
 # Конфигурация Minio
 ```
-docker run --rm -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin --network diplombackend_default \
-  -v %cd%/minio_setup.sh:/minio_setup.sh:ro \
-  -v %cd%/minio-policy.json:/minio-policy.json:ro \
-  minio/mc /bin/sh /minio_setup.sh
+docker run --network diplom-backend_default -e MINIO_ROOT_USER=minioadmin -e MINIO_ROOT_PASSWORD=minioadmin -v %cd%/minio_setup.sh:/minio_setup.sh:ro -v %cd%/minio-policy.json:/scripts/minio-policy.json:ro minio-setup sh /minio_setup.sh
 ```
 ---
 # Локально

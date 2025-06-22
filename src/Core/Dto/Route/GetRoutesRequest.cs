@@ -2,10 +2,11 @@
 
 namespace Core.Dto.Route;
 
-public class GetRoutesRequest
+public class GetRoutesRequest : IPaggination
 {
-	public int PageNumber { get; set; }
-	public int PageSize { get; set; }
+	public string? Title { get; set; }
+	public int? PageNumber { get; set; }
+	public int? PageSize { get; set; }
 	public RoutesSortingType SortType { get; set; }
 	public IEnumerable<RoutesFiltersType>? Filters { get; set; }
 }

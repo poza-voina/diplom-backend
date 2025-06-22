@@ -15,13 +15,13 @@ namespace Core.Services;
 
 public interface IBookService
 {
-	Task<IEnumerable<RouteExampleRecordDto>> GetBooksAsync(Client client, GetBooksRequest request);
-	Task<RouteExampleRecordDto> GetBookAsync(Client client, long bookId);
+	Task<IEnumerable<RouteExampleRecordWithRouteExampleDto>> GetBooksAsync(Client client, GetBooksRequest request);
+	Task<RouteExampleRecordWithRouteExampleDto> GetBookAsync(Client client, long bookId);
 }
 
 public class BookService(IRepository<RouteExampleRecord> routeExampleRecordRepository, IDateTimeConverter dateTimeConverter) : IBookService
 {
-	public async Task<IEnumerable<RouteExampleRecordDto>> GetBooksAsync(Client client, GetBooksRequest request)
+	public async Task<IEnumerable<RouteExampleRecordWithRouteExampleDto>> GetBooksAsync(Client client, GetBooksRequest request)
 	{
 		var recordsQuery = routeExampleRecordRepository
 			.Items
@@ -58,10 +58,10 @@ public class BookService(IRepository<RouteExampleRecord> routeExampleRecordRepos
 
 		var records = await recordsQuery.ToListAsync();
 
-		return records.Adapt<IEnumerable<RouteExampleRecordDto>>();
+		return records.Adapt<IEnumerable<RouteExampleRecordWithRouteExampleDto>>();
 	}
 
-	public async Task<RouteExampleRecordDto> GetBookAsync(Client client, long bookId)
+	public async Task<RouteExampleRecordWithRouteExampleDto> GetBookAsync(Client client, long bookId)
 	{
 		var record = await routeExampleRecordRepository
 			.Items
@@ -70,6 +70,6 @@ public class BookService(IRepository<RouteExampleRecord> routeExampleRecordRepos
 			.SingleOrDefaultAsync(x => x.Id == bookId && x.ClientId == client.Id)
 			?? throw new InvalidOperationException("Не удалось найти бронь для клиента");
 
-		return record.Adapt<RouteExampleRecordDto>();
+		return record.Adapt<RouteExampleRecordWithRouteExampleDto>();
 	}
 }

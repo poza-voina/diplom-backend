@@ -1,6 +1,7 @@
 ﻿using Core.Dto.Client;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
+using Humanizer;
 using Infrastructure;
 using Infrastructure.Entities;
 using Mapster;
@@ -9,7 +10,7 @@ namespace Core.Services;
 
 public class ClientService(
 	IRepository<Client> userRepository,
-	IPasswordManager passwordManager) : IClientService
+    IPasswordManager passwordManager) : IClientService
 {
 	public async Task<ClientProfileDto> GetProfileAsync(long id)
 	{
@@ -25,4 +26,15 @@ public class ClientService(
 
 		await userRepository.CreateAsync(user);
 	}
+
+    public async Task UpdateProfileAsync(long id, RegistrationRequest request)
+	{
+		var user = request.Adapt<Client>();
+		user.Id = id;
+        user.PasswordHash = passwordManager.GetPasswordHash(request.Password, out var salt);
+        user.PasswordSalt = salt;
+
+        await userRepository.UpdateAsync(user);
+	}
+
 }

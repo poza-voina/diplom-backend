@@ -76,6 +76,7 @@ public class RouteCategoryService(IRepository<RouteCategory> repository, IReposi
 	{
 		var entities = await repository
 			.Items
+			.Include(x => x.Routes)
 			.ToListAsync();
 
 		return entities.Adapt<IEnumerable<RouteCategoryDto>>(_mapsterConfig);

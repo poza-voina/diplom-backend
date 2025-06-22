@@ -33,7 +33,8 @@ public class RouteExamplesController(IRouteExampleService routeExampleService) :
 		return Results.Ok();
 	}
 
-	[HttpGet("{id:long}")]
+    [AllowAnonymous]
+    [HttpGet("{id:long}")]
 	public async Task<IResult> GetAsync([FromRoute] long id)
 	{
 		RouteExampleDto result = await routeExampleService.GetAsync(id);

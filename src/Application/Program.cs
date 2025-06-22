@@ -30,40 +30,17 @@ builder.Services.Configure<Microsoft.AspNetCore.Mvc.JsonOptions>(options =>
 
 
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen(options =>
-{
-	options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-	{
-		Name = "Authorization",
-		Type = SecuritySchemeType.Http,
-		Scheme = "bearer",
-		BearerFormat = "JWT",
-		In = ParameterLocation.Header,
-		Description = "Введите токен JWT в формате: Bearer {token}"
-	});
 
-	options.AddSecurityRequirement(new OpenApiSecurityRequirement
-	{
-		{
-			new OpenApiSecurityScheme
-			{
-				Reference = new OpenApiReference
-				{
-					Type = ReferenceType.SecurityScheme,
-					Id = "Bearer"
-				}
-			},
-			new string[] {}
-		}
-	});
-});
+services.AddSwagger();
 
+var frontendUrl = builder.Configuration.GetValue<string>("Frontend:Url") ?? throw new InvalidOperationException("Не удалось найти URL Frontend");
+Console.WriteLine(frontendUrl);
 builder.Services.AddCors(options =>
 {
-	options.AddPolicy("AllowAngularApp",
+	options.AddPolicy("AllowFrontend",
 		policy =>
 		{
-			policy.WithOrigins("http://localhost:4200")
+            policy.AllowAnyOrigin()
 				.AllowAnyMethod()
 				.AllowAnyHeader();
 		});
@@ -75,58 +52,24 @@ services.AddHttpClient("Geocoder")
 		SslProtocols = System.Security.Authentication.SslProtocols.Tls12
 	});
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-
-services
-	.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-	.AddJwtBearer(options =>
-	{
-		options.TokenValidationParameters = new TokenValidationParameters
-		{
-			ValidateIssuer = true,
-			ValidIssuer = jwtSettings.GetValue<string>("Issuer") ?? throw new Exception("Issuer not found"), // Исправлено с "Issure" на "Issuer"
-			ValidateAudience = true,
-			ValidAudience = jwtSettings.GetValue<string>("Audience") ?? throw new Exception("Audience not found"),
-			ValidateLifetime = true,
-			IssuerSigningKey = new SymmetricSecurityKey(
-	Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("SecretKey") ?? throw new Exception("Secret not found"))),
-			ValidateIssuerSigningKey = true,
-
-			RoleClaimType = ClaimTypes.Role,
-			NameClaimType = ClaimTypes.Email
-		};
-	});
-
+services.AddCustomAuthentication(builder);
 services.AddAuthorization();
+services.AddProblemDetails();
 services.AddExceptionHandler<ExceptionHandler>();
-services.AddSingleton<IMinioClient>(sp =>
-{
-	var config = sp.GetRequiredService<IConfiguration>();
-	return new MinioClient()
-		.WithEndpoint(config["Minio:Endpoint"])
-		.WithCredentials(config["Minio:AccessKey"], config["Minio:SecretKey"])
-		.WithSSL(false)
-		.Build();
-});
-
-
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-services.AddDbContext(connectionString);
-
+services.AddMinio();
+services.AddDbContext(builder);
 services.AddRepositories();
 services.AddServices();
-services.AddProblemDetails();
-
 
 var app = builder.Build();
-
+app.UseExceptionHandler();
 app.UseMiddleware<DatabaseExceptionTranslationMiddleware>();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseCors("AllowAngularApp");
+app.UseCors("AllowFrontend");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();

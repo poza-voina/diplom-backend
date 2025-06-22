@@ -19,3 +19,8 @@ public class RouteDto
 	public AttachmentDto? Attachment { get; set; }
 	public IEnumerable<RouteCategoryDto> RouteCategories { get; set; } = [];
 }
+
+public class RouteDtoWithExamplesMarker : RouteDto
+{
+	public required bool IsExamples { get; set; }
+}
