@@ -34,3 +34,22 @@ services:
       - "9001:9001"
     command: server /data --console-address ":9001"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  minio-setup:
+    build:
+      context: .
+      dockerfile: Dockerfile.minio-setup
+    volumes:
+      - ./minio-policy.json:/scripts/minio-policy.json
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    depends_on:
+      minio:
+        condition: service_healthy

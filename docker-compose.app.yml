@@ -7,13 +7,18 @@ networks:
 
 services:
   diplom-backend:
-    image: diplom-backend
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.app
     ports:
       - "8080:80"
     env_file:
       - .env
-    command: ["dotnet", "ef", "database update"]
     restart: unless-stopped
+
+  migration-runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.migration-runner
+    env_file:
+      - .env
