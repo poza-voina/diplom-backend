@@ -58,11 +58,11 @@ public class RouteController(IRouteService routeService, IRouteExampleService ro
 		return Ok(await routeService.UpdateAsync(dto));
 	}
 
-	[HttpPut("update-cue-points")]
+	[HttpPut("{routeId:long}/update-cue-points")]
 	[Authorize(Roles = "Admin")]
-	public async Task<IActionResult> UpdateRouteCuePoints([FromBody] IEnumerable<CuePointDto> dto)
+	public async Task<IActionResult> UpdateRouteCuePoints([FromBody] IEnumerable<CuePointDto> dto, [FromRoute] long routeId)
 	{
-		var result = await cuePointService.UpdateOrCreateRangeAsync(dto);
+		var result = await cuePointService.UpdateOrCreateRangeAsync(dto, routeId);
 		return Ok(result);
 	}
 

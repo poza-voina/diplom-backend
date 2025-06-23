@@ -11,6 +11,7 @@ using Infrastructure.Entities;
 using Infrastructure.Exceptions;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -39,8 +40,12 @@ public class RouteService(IRouteRepository repository) : IRouteService
 
 	public async Task<RouteDto> UpdateAsync(UpdateRouteRequest dto)
 	{
-		var entity = dto.Adapt<Route>();
+        var original = await repository.GetAsync(dto.Id);
+        var entity = dto.Adapt<Route>();
+
+		entity.CreatedAt = original.CreatedAt;
 		entity = await repository.UpdateRoute(entity);
+
 		var test = await GetItemWithIncludesAsync(entity);
 		return test;
 	}

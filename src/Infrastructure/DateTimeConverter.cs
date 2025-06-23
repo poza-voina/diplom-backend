@@ -25,9 +25,22 @@ public class DateTimeConverter : IDateTimeConverter
 		return TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, timeZone);
 	}
 
-	public DateTime ConvertToUtc(DateTime dateTime)
-	{
-		TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(_timeZoneId);
-		return TimeZoneInfo.ConvertTimeToUtc(dateTime, timeZone);
-	}
+    public DateTime ConvertToUtc(DateTime dateTime)
+    {
+        if (dateTime.Kind == DateTimeKind.Utc)
+        {
+            // Уже в UTC — вернуть как есть
+            return dateTime;
+        }
+
+        if (dateTime.Kind == DateTimeKind.Local)
+        {
+            // Можно конвертировать напрямую в UTC
+            return dateTime.ToUniversalTime();
+        }
+
+        // Если Unspecified — считаем, что это время в часовом поясе _timeZoneId
+        TimeZoneInfo timeZone = TimeZoneInfo.FindSystemTimeZoneById(_timeZoneId);
+        return TimeZoneInfo.ConvertTimeToUtc(dateTime, timeZone);
+    }
 }

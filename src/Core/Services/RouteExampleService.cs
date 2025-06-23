@@ -54,8 +54,19 @@ public class RouteExampleService(
         return RouteExampleDto.FromEntity(result);
     }
 
-    public async Task DeleteAsync(long id) =>
+    public async Task DeleteAsync(long id)
+    {
+        var routeExample = await routeExampleRepository.Items.Include(x => x.RouteExampleRecords).FirstOrDefaultAsync(x => x.Id == id);
+        if (routeExample is null)
+        {
+            throw new ApiEntityNotFoundException("Не удалось найти экземпляр маршрута");
+        }
+        else if (routeExample.RouteExampleRecords.Any())
+        {
+            throw new ApiValidationException("Невозможно удалить экземпляр маршрута, на котором есть записи");
+        }
         await routeExampleRepository.DeleteAsync(id);
+    }
 
     public async Task<RouteExampleDto> GetAsync(long id)
     {
@@ -76,9 +87,21 @@ public class RouteExampleService(
 
     public async Task<IEnumerable<RouteExampleDto>> GetExamplesByRouteId(long routeId)
     {
-        return await routeExampleRepository.Items
+        var recordsQuery = routeExampleRepository.Items
             .Where(x => x.RouteId == routeId)
-            .Select(x => RouteExampleDto.FromEntity(x)).ToListAsync();
+            .Include(x => x.RouteExampleRecords);
+
+        var records = await recordsQuery.ToListAsync();
+
+        var result = records.Adapt<List<RouteExampleDto>>();
+        var lengths = records.Select(x => x.RouteExampleRecords.Count).ToList();
+
+        for (var i = 0; i < records.Count; i++)
+        {
+            result[i].CountRecords = lengths[i];
+        }
+
+        return result;
     }
 
     public async Task<RouteExampleDto> CreateOrUpdateAsync(RouteExampleCreateOrUpdateRequest request)

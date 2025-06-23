@@ -18,20 +18,15 @@ public class CuePointService(IRepository<CuePoint> repository) : ICuePointServic
 			.ToList() ?? [];
 	}
 
-	public async Task<IEnumerable<CuePointDto>> UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto)
+	public async Task<IEnumerable<CuePointDto>> UpdateOrCreateRangeAsync(IEnumerable<CuePointDto> dto, long routeId)
 	{
-		if (dto == null || !dto.Any())
-			throw new InvalidOperationException("Не удалось найти маршрут");
-
-		var routeId = dto.First().RouteId;
-
 		var normalizedDtos = NormalizeSortedIndexes(dto).ToList();
 
 		var forCreate = normalizedDtos.Where(x => x.Id is null).ToList();
 		var forUpdate = normalizedDtos.Where(x => x.Id is not null).ToList();
 
 		// Получаем все существующие точки для этого маршрута
-		var existingEntities = await repository.Items.Where(x => x.RouteId == routeId.Value).ToListAsync();
+		var existingEntities = await repository.Items.Where(x => x.RouteId == routeId).ToListAsync();
 
 		// Идентификаторы, которые пришли во входящих данных
 		var incomingIds = forUpdate.Select(x => x.Id!.Value).ToHashSet();

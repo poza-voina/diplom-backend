@@ -34,7 +34,7 @@ public class ApplicationDbContext : DbContext
 			{
 				// password = qwerty12345
 				Id = 1,
-				Email = "admin@digitaldiary.site",
+				Email = "admin@tourguide.site",
 				PasswordHash = DefaultPasswordHash,
 				PasswordSalt = DefaultPasswordSalt,
 				FirstName = "Admin",
