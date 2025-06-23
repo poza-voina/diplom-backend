@@ -26,7 +26,7 @@ public class BookService(IRepository<RouteExampleRecord> routeExampleRecordRepos
 		var recordsQuery = routeExampleRecordRepository
 			.Items
 			.Include(x => x.RouteExample)
-			.ThenInclude(y => y.Route).AsQueryable();
+			.ThenInclude(y => y.Route).Where(x => x.ClientId == client.Id).AsQueryable();
 
 
 		if (request.StartDate is { } && request.EndDate is { })
